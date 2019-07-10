@@ -5,7 +5,8 @@ import (
 	"os"
 	"strconv"
 
-	redis "github.com/go-redis/redis"
+	"github.com/go-redis/redis"
+	"github.com/joho/godotenv"
 )
 
 // Redis client connection.
@@ -17,6 +18,9 @@ func GetRedisClient() *redis.Client {
 }
 
 func init() {
+	// Read values from .env file
+	godotenv.Load()
+
 	// Get Redis host, port, password and database
 	host := os.Getenv("REDIS_HOST")
 	password := os.Getenv("REDIS_PASSWORD")
