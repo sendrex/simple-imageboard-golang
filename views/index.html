@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>🖕🏽</title>
+	<style type="text/css" rel="stylesheet">
+		body {
+			padding: 2vh 30vw;
+			font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
+		}
+
+		@media all and (orientation: portrait), (max-width: 85em) {
+			body {
+				padding: 2vh 5vw;
+			}
+		}
+
+		h1, h3 {
+			text-align: center;
+		}
+
+		p {
+			margin-top: 3rem;
+			margin-bottom: 0;
+			font-weight: bold;
+		}
+
+		ul>li {
+			line-height: 1rem;
+		}
+
+		code {
+			border: 1px solid rgb(209, 209, 209);
+			border-radius: 2px;
+			background-color: rgb(235, 235, 235);
+			padding: 1em;
+			margin: 1em 0;
+			line-height: 2rem;
+			display: block;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Simple Imageboard</h1>
+	<h3>Quick Guide</h3>
+
+	<p>GET</p>
+	<code>/page</code>
+	<code>/thread</code>
+
+	<p>GET, POST, DELETE</p>
+	<code>/post</code>
+
+	<p>HOW TO POST</p>
+	<code>
+		Header:<br>
+		- <b>Content-Type</b>: application/json; charset=utf-8<br>
+		<br>
+		Body:<br>
+		- <b>content</b>: &lt;post content (NOT null OR empty)&gt; (length limit: 1000 chars),<br>
+		- <b>on_thread</b>: &lt;id of the thread to comment on&gt; OR null to make a new thread,<br>
+		- <b>reply_to</b>: &lt;id of the post you are replying to in a new or existing thread&gt; OR null,<br>
+		- <b>pic</b>: &lt;direct external image link&gt; OR null<br>
+	</code>
+
+	<p>HOW TO DELETE</p>
+	<code>
+		Header:<br>
+		- <b>Content-Type</b>: application/json; charset=utf-8<br>
+		<br>
+		Body:<br>
+		- <b>delete_code</b>: &lt;code received after successful posting&gt;<br>
+	</code>
+</body>
+
+</html>
