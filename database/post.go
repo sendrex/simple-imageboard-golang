@@ -8,7 +8,7 @@ type Post struct {
 	Content    string `gorm:"not null;size:1000"`
 	OnThread   uint64
 	ReplyTo    uint64
-	Pic        string    `gorm:"not null;size:512"`
+	Pic        string    `gorm:"size:512"`
 	DeleteCode string    `gorm:"not null"`
 	CreatedAt  time.Time `gorm:"not null;default:CURRENT_TIMESTAMP"`
 	UpdatedAt  time.Time `gorm:"not null;default:CURRENT_TIMESTAMP"`
