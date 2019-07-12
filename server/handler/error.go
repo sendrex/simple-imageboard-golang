@@ -10,16 +10,27 @@ type errorJSON struct {
 	Message string `json:"message"`
 }
 
-var notFoundResponse string
-
-// GetNotFoundResponse returns a JSON string with a 404 Not Found response.
-func GetNotFoundResponse() string {
-	return notFoundResponse
+var responses = make(map[uint16]string)
+var errors = map[uint16]string{
+	400: "Bad Request",
+	404: "Not Found",
+	500: "Internal Server Error",
 }
 
-// PathNotFound handles a failed request.
+// GetError returns a JSON string with a <status> <message> response.
+func GetError(status uint16) (response string) {
+	if value, ok := responses[status]; ok {
+		response = value
+	} else {
+		response = GetError(500)
+	}
+	return
+}
+
+// PathNotFound handles a failed request with a 404 Not Found response.
 func PathNotFound(ctx iris.Context) {
-	ctx.WriteString(notFoundResponse)
+	response := GetError(404)
+	ctx.WriteString(response)
 }
 
 func makeResponseError(status uint16, message string) string {
@@ -27,10 +38,11 @@ func makeResponseError(status uint16, message string) string {
 		Status:  status,
 		Message: message,
 	})
-
 	return string(jsonObject)
 }
 
 func init() {
-	notFoundResponse = makeResponseError(404, "Not Found")
+	for status, message := range errors {
+		responses[status] = makeResponseError(status, message)
+	}
 }

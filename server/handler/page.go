@@ -3,6 +3,7 @@ package handler
 import (
 	"time"
 
+	"github.com/AquoDev/simple-imageboard-golang/database/methods"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
 	"github.com/kataras/iris"
 )
@@ -36,15 +37,16 @@ func GetPage(ctx iris.Context) {
 	}
 
 	// If it couldn't be found in cache, get it from the database
-	// TODO implement database logic
-	// TODO look for an ORM (migrations, maybe seeding, etc)
-	//response, err = database.GetPage(id)
-	// If it doesn't exist, the response will be 404
+	response, err = methods.GetPage(id)
 	if err != nil {
-		response = GetNotFoundResponse()
+		// If there are errors, the response will be 400 Bad Request
+		response = GetError(400)
+	} else if response == "[]" {
+		// If the list is empty, the response will be 404 Not Found
+		response = GetError(404)
 	}
 
-	// Set the cache and send the response (be it a regular one or 404)
+	// Set the cache and send the response (be it a correct or failed one)
 	client.Set(redisKey, response, 15*time.Second)
 	ctx.WriteString(response)
 }
