@@ -8,9 +8,6 @@ import (
 	"github.com/kataras/iris"
 )
 
-// Redis client for getting from/setting to cache.
-var client = redis.GetRedisClient()
-
 // GetPageExample handles a JSON response with a how-to example.
 func GetPageExample(ctx iris.Context) {
 	ctx.JSON(iris.Map{
@@ -29,7 +26,7 @@ func GetPage(ctx iris.Context) {
 	redisKey := redis.GetPageKey(id)
 
 	// Get page from cache
-	response, err = client.Get(redisKey).Result()
+	response, err = redisClient.Get(redisKey).Result()
 	// If it exists, return a response with it
 	if err == nil {
 		ctx.WriteString(response)
@@ -47,6 +44,6 @@ func GetPage(ctx iris.Context) {
 	}
 
 	// Set the cache and send the response (be it a correct or failed one)
-	client.Set(redisKey, response, 15*time.Second)
+	redisClient.Set(redisKey, response, 15*time.Second)
 	ctx.WriteString(response)
 }
