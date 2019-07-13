@@ -3,12 +3,10 @@ package methods
 import (
 	"encoding/json"
 	"time"
-
-	"github.com/AquoDev/simple-imageboard-golang/database"
 )
 
-// Post is the same struct, but with less fields to show on page.
-type Post struct {
+// PostPage is the same struct, but with less fields to show on page.
+type PostPage struct {
 	ID        uint64    `json:"id"`
 	Content   string    `json:"content"`
 	Pic       string    `json:"pic"`
@@ -16,13 +14,11 @@ type Post struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-var db = database.GetDatabaseClient()
-
 // GetPage returns a JSON with a thread list.
 func GetPage(id uint64) (string, error) {
 	// Make empty struct of posts slice
 	var page struct {
-		Posts []Post
+		Posts []PostPage
 	}
 
 	// Query posts that started a thread (on_thread == null)
