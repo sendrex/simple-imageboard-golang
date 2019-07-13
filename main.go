@@ -33,6 +33,13 @@ func main() {
 		pages.Get("/{id:uint8 min(0) max(9)}", handler.GetPage)
 	}
 
+	// Set thread handler
+	threads := app.Party("/thread")
+	{
+		threads.Get("/", handler.GetThreadExample)
+		threads.Get("/{id:uint64}", handler.GetThread)
+	}
+
 	// Set 404 Not Found handler
 	app.OnAnyErrorCode(handler.PathNotFound)
 
