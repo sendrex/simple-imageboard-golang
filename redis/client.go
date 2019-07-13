@@ -42,4 +42,13 @@ func init() {
 		Password: password,
 		DB:       db,
 	})
+
+	// Check if it's connected
+	pong, err := client.Ping().Result()
+	if err != nil {
+		panic(err)
+	}
+
+	// Show the result
+	fmt.Printf("Redis: %s received\n", pong)
 }
