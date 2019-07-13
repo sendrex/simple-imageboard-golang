@@ -2,7 +2,7 @@ package database
 
 import "time"
 
-// Post defines the table in which the posts will be saved.
+// Post defines the table in which the posts will be saved and how it's represented in JSON.
 type Post struct {
 	ID         uint64     `json:"id" gorm:"primary_key;AUTO_INCREMENT"`
 	Content    string     `json:"content" gorm:"not null;size:1000"`
