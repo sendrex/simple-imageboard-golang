@@ -38,5 +38,6 @@ func init() {
 		panic(err)
 	} else {
 		db = conn
+		fmt.Println("Postgres: client has successfully connected")
 	}
 }
