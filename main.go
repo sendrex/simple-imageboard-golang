@@ -37,16 +37,16 @@ func main() {
 	threads := app.Party("/thread")
 	{
 		threads.Get("/", handler.GetThreadExample)
-		threads.Get("/{id:uint64}", handler.GetThread)
+		threads.Get("/{id:uint64 min(1)}", handler.GetThread)
 	}
 
 	// Set post handler
 	posts := app.Party("/post")
 	{
 		posts.Get("/", handler.GetPostExample)
-		posts.Get("/{id:uint64}", handler.GetPost)
+		posts.Get("/{id:uint64 min(1)}", handler.GetPost)
 		//posts.Post("/", handler.SavePost)
-		//posts.Delete("/{id:uint64}", handler.DeletePost)
+		//posts.Delete("/{id:uint64 min(1)}", handler.DeletePost)
 	}
 
 	// Set 404 Not Found handler
