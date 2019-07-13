@@ -2,23 +2,15 @@ package methods
 
 import (
 	"encoding/json"
-	"time"
+
+	"github.com/AquoDev/simple-imageboard-golang/database"
 )
 
-// PostThread is the same struct, but with less fields to show on thread.
-type PostThread struct {
-	ID        uint64    `json:"id"`
-	Content   string    `json:"content"`
-	Pic       string    `json:"pic"`
-	ReplyTo   uint64    `json:"reply_to"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
-// GetThread returns a JSON with a thread (original post + on_thread == OP.id).
+// GetThread returns a JSON with a thread (original post + on_thread == original post ID).
 func GetThread(id uint64) (string, error) {
 	// Make empty struct of posts slice
 	var thread struct {
-		Posts []PostThread
+		Posts []database.Post
 	}
 
 	// Query posts that belong to a thread
