@@ -40,14 +40,19 @@ func main() {
 		threads.Get("/{id:uint64}", handler.GetThread)
 	}
 
+	// Set post handler
+	posts := app.Party("/post")
+	{
+		posts.Get("/", handler.GetPostExample)
+		posts.Get("/{id:uint64}", handler.GetPost)
+		//posts.Post("/", handler.SavePost)
+		//posts.Delete("/{id:uint64}", handler.DeletePost)
+	}
+
 	// Set 404 Not Found handler
 	app.OnAnyErrorCode(handler.PathNotFound)
 
 	// Start server
 	addr := fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT"))
-	app.Run(
-		iris.Addr(addr),
-		iris.WithoutServerError(iris.ErrServerClosed),
-		iris.WithOptimizations,
-	)
+	app.Run(iris.Addr(addr))
 }
