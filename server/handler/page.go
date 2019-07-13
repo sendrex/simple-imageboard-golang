@@ -12,7 +12,7 @@ import (
 func GetPageExample(ctx iris.Context) {
 	ctx.JSON(iris.Map{
 		"info":    "If you want to see any page from 0 to 9 (being 0 the first and 9 the last), see the example.",
-		"example": "{url}/page/0",
+		"example": "{url}/page/{number}",
 	})
 }
 

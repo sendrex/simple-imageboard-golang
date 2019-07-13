@@ -21,11 +21,11 @@ func GetThread(ctx iris.Context) {
 	var response string
 	var err error
 
-	// Parse page ID
+	// Parse thread ID
 	id := ctx.Params().GetUint64Default("id", 0)
 	redisKey := redis.GetThreadKey(id)
 
-	// Get page from cache
+	// Get thread from cache
 	response, err = redisClient.Get(redisKey).Result()
 	// If it exists, return a response with it
 	if err == nil {
