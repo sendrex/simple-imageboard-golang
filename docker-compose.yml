@@ -21,7 +21,7 @@ services:
       - redis-data:/data
 
   database:
-    image: postgres:11.3-alpine
+    image: postgres:11.4-alpine
     restart: always
     container_name: pgsql-si-go
     networks:
