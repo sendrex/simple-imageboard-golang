@@ -1,5 +1,8 @@
 # Start from Golang v1.11 base image
-FROM golang:1.11
+FROM golang:1.11-alpine
+
+# Download Git
+RUN apk add --no-cache git
 
 # Download the dependencies
 RUN go get -u -v github.com/AquoDev/simple-imageboard-golang/...
