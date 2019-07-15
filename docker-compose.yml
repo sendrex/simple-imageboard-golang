@@ -1,0 +1,67 @@
+version: "3.3"
+
+services:
+  redis:
+    image: redis:5.0.5-alpine
+    restart: always
+    sysctls:
+      net.core.somaxconn: 1024
+    container_name: redis-si-go
+    networks:
+      - internal_network
+    #ports:
+    #  - "${REDIS_PORT}:${REDIS_PORT}"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "${REDIS_PORT}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ["redis-server", "--port", "${REDIS_PORT}", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  database:
+    image: postgres:11.3-alpine
+    restart: always
+    container_name: pgsql-si-go
+    networks:
+      - internal_network
+    #ports:
+    #  - "${DB_PORT}:${DB_PORT}"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-p", "${DB_PORT}", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - "POSTGRES_USER=${DB_USER}"
+      - "POSTGRES_PASSWORD=${DB_PASSWORD}"
+      - "POSTGRES_DB=${DB_NAME}"
+    command: ["-p", "${DB_PORT}"]
+    volumes:
+      - pgsql-data:/var/lib/postgresql/data
+
+  app:
+    build: "."
+    restart: always
+    container_name: api-si-go
+    networks:
+      - internal_network
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - redis
+      - database
+    environment:
+      - DB_HOST=database
+      - REDIS_HOST=redis
+    volumes:
+      - .:/go/src/github.com/AquoDev/simple-imageboard-golang
+
+networks:
+  internal_network:
+    driver: bridge
+
+volumes:
+  pgsql-data:
+  redis-data:
