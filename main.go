@@ -45,14 +45,14 @@ func main() {
 	{
 		posts.Get("/", handler.GetPostExample)
 		posts.Get("/{id:uint64 min(1)}", handler.GetPost)
-		//posts.Post("/", handler.SavePost)
-		//posts.Delete("/{id:uint64 min(1)}", handler.DeletePost)
+		//posts.Post("/", handler.CheckHeaders, handler.SavePost)
+		//posts.Delete("/{id:uint64 min(1)}", handler.CheckHeaders, handler.DeletePost)
 	}
 
 	// Set 404 Not Found handler
 	app.OnAnyErrorCode(handler.PathNotFound)
 
 	// Start server
-	addr := fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT"))
+	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
 	app.Run(iris.Addr(addr))
 }
