@@ -8,7 +8,10 @@ import (
 	"github.com/kataras/iris"
 )
 
-// TODO implement SavePost, DeletePost funcs
+// DeleteData is a struct in which data to delete a post is parsed from JSON.
+type DeleteData struct {
+	DeleteCode string `json:"delete_code"`
+}
 
 // GetPostExample handles a JSON response with a how-to example.
 func GetPostExample(ctx iris.Context) {
@@ -45,4 +48,43 @@ func GetPost(ctx iris.Context) {
 	// Set the cache and send the response (be it a correct or failed one)
 	redisClient.Set(redisKey, response, 30*time.Second)
 	ctx.WriteString(response)
+}
+
+// TODO implement SavePost handler for POST method
+func SavePost(ctx iris.Context) {
+
+}
+
+// DeletePost handles a JSON response with a post.
+func DeletePost(ctx iris.Context) {
+	data := new(DeleteData)
+
+	// Parse post ID
+	id := ctx.Params().GetUint64Default("id", 0)
+
+	// Try to get post from database to check if it exists
+	if _, err := methods.GetPost(id); err != nil {
+		postDoesntExist := GetError(404)
+		ctx.WriteString(postDoesntExist)
+		return
+	}
+
+	// Read JSON from body
+	if err := ctx.ReadJSON(&data); err != nil {
+		invalidData := GetError(400)
+		ctx.WriteString(invalidData)
+		return
+	}
+
+	// Try to delete post (and thread if the post has "on_thread == null")
+	if err := methods.DeletePost(id, data.DeleteCode); err != nil {
+		incorrectCode := GetError(400)
+		ctx.WriteString(incorrectCode)
+		return
+	}
+
+	ctx.JSON(iris.Map{
+		"status":  200,
+		"message": "Success",
+	})
 }

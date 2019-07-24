@@ -26,6 +26,8 @@ func main() {
 		ctx.Next()
 	})
 
+	// TODO implement CORS middleware
+
 	// Set page handler
 	pages := app.Party("/page")
 	{
@@ -45,8 +47,9 @@ func main() {
 	{
 		posts.Get("/", handler.GetPostExample)
 		posts.Get("/{id:uint64 min(1)}", handler.GetPost)
-		//posts.Post("/", handler.CheckHeaders, handler.SavePost)
-		//posts.Delete("/{id:uint64 min(1)}", handler.CheckHeaders, handler.DeletePost)
+		// TODO make "CheckHeaders" middleware before reading JSON body (POST and DELETE methods)
+		//posts.Post("/", middleware.CheckHeaders, handler.SavePost)
+		posts.Delete("/{id:uint64 min(1)}", handler.DeletePost)
 	}
 
 	// Set 404 Not Found handler
