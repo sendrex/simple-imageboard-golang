@@ -45,9 +45,8 @@ func main() {
 	{
 		posts.Get("/", handler.GetPostExample)
 		posts.Get("/{id:uint64 min(1)}", handler.GetPost)
-		// TODO make "CheckHeaders" middleware before reading JSON body (POST and DELETE methods)
 		//posts.Post("/", middleware.CheckHeaders, handler.SavePost)
-		posts.Delete("/{id:uint64 min(1)}", handler.DeletePost)
+		posts.Delete("/{id:uint64 min(1)}", middleware.CheckHeaders, handler.DeletePost)
 	}
 
 	// Set 404 Not Found handler
