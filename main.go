@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/AquoDev/simple-imageboard-golang/server/handler"
+	"github.com/AquoDev/simple-imageboard-golang/server/middleware"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/kataras/iris"
 )
@@ -21,10 +22,7 @@ func main() {
 	app.Get("/", handler.GetIndex)
 
 	// Set "Content-Type" header for every response except for the index
-	app.UseGlobal(func(ctx iris.Context) {
-		ctx.Header("Content-Type", "application/json; charset=UTF-8")
-		ctx.Next()
-	})
+	app.UseGlobal(middleware.UseContentTypeJSON)
 
 	// TODO implement CORS middleware
 
