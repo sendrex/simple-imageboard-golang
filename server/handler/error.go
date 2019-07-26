@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+
 	"github.com/kataras/iris"
 )
 
@@ -10,12 +11,14 @@ type errorJSON struct {
 	Message string `json:"message"`
 }
 
-var responses = make(map[uint16]string)
-var errors = map[uint16]string{
-	400: "Bad Request",
-	404: "Not Found",
-	500: "Internal Server Error",
-}
+var (
+	responses = make(map[uint16]string)
+	errors    = map[uint16]string{
+		400: "Bad Request",
+		404: "Not Found",
+		500: "Internal Server Error",
+	}
+)
 
 // GetError returns a JSON string with a <status> <message> response.
 func GetError(status uint16) (response string) {
