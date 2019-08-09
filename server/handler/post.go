@@ -72,7 +72,7 @@ func SavePost(ctx iris.Context) {
 
 	// Make delete code if it hasn't one
 	if post.DeleteCode == "" {
-		post.DeleteCode = utils.RandomString(16)
+		post.DeleteCode = utils.RandomString(32)
 	}
 
 	if response, err := methods.SavePost(post); err != nil {
