@@ -7,8 +7,8 @@ import (
 )
 
 type insertedPost struct {
-	ID         uint64     `json:"id"`
-	DeleteCode string     `json:"delete_code"`
+	ID         uint64 `json:"id"`
+	DeleteCode string `json:"delete_code"`
 }
 
 // GetPost returns a JSON with a post.
@@ -37,7 +37,7 @@ func SavePost(post *database.Post) (result string, err error) {
 	} else {
 		// If it's inserted, parse it into JSON
 		jsonObject, _ := json.Marshal(&insertedPost{
-			ID:  post.ID,
+			ID:         post.ID,
 			DeleteCode: post.DeleteCode,
 		})
 		result = string(jsonObject)
