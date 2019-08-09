@@ -45,7 +45,7 @@ func main() {
 	{
 		posts.Get("/", handler.GetPostExample)
 		posts.Get("/{id:uint64 min(1)}", handler.GetPost)
-		//posts.Post("/", middleware.CheckHeaders, handler.SavePost)
+		posts.Post("/", middleware.CheckHeaders, handler.SavePost)
 		posts.Delete("/{id:uint64 min(1)}", middleware.CheckHeaders, handler.DeletePost)
 	}
 

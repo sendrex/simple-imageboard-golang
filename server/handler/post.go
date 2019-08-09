@@ -3,8 +3,10 @@ package handler
 import (
 	"time"
 
+	"github.com/AquoDev/simple-imageboard-golang/database"
 	"github.com/AquoDev/simple-imageboard-golang/database/methods"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
+	"github.com/AquoDev/simple-imageboard-golang/server/utils"
 	"github.com/kataras/iris"
 )
 
@@ -50,9 +52,36 @@ func GetPost(ctx iris.Context) {
 	ctx.WriteString(response)
 }
 
-// TODO implement SavePost handler for POST method
+// TODO test implementation for POST method, it's not finished
 func SavePost(ctx iris.Context) {
+	post := new(database.Post)
 
+	// Read JSON from body
+	if err := ctx.ReadJSON(&post); err != nil {
+		invalidData := GetError(400)
+		ctx.WriteString(invalidData)
+		return
+	}
+
+	// Check if it has already an ID (it shouldn't have)
+	if post.ID != 0 {
+		invalidData := GetError(400)
+		ctx.WriteString(invalidData)
+		return
+	}
+
+	// Make delete code if it hasn't one
+	if post.DeleteCode == "" {
+		post.DeleteCode = utils.RandomString(16)
+	}
+
+	if response, err := methods.SavePost(post); err != nil {
+		invalidData := GetError(400)
+		ctx.WriteString(invalidData)
+	} else {
+		// TODO delete old threads when the post starts a new thread
+		ctx.WriteString(response)
+	}
 }
 
 // DeletePost handles a JSON response with a post.
