@@ -73,7 +73,7 @@ func SavePost(ctx iris.Context) {
 	}
 
 	// Check if pic exists and it's an invalid URL (it should be a valid URL)
-	if post.Pic != "" && !govalidator.IsUrl(post.Pic) {
+	if post.Pic != nil && !govalidator.IsURL(post.Pic.String) {
 		invalidData := GetError(400)
 		ctx.WriteString(invalidData)
 		return
