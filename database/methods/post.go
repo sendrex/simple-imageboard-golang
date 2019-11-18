@@ -4,12 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/AquoDev/simple-imageboard-golang/database"
+	"github.com/AquoDev/simple-imageboard-golang/server/utils"
 )
-
-type insertedPost struct {
-	ID         uint64 `json:"id"`
-	DeleteCode string `json:"delete_code"`
-}
 
 // GetPost returns a JSON with a post.
 func GetPost(id uint64) (string, error) {
@@ -36,7 +32,7 @@ func SavePost(post *database.Post) (result string, err error) {
 		result = ""
 	} else {
 		// If it's inserted, parse it into JSON
-		jsonObject, _ := json.Marshal(&insertedPost{
+		jsonObject, _ := json.Marshal(&utils.DeleteData{
 			ID:         post.ID,
 			DeleteCode: post.DeleteCode,
 		})
