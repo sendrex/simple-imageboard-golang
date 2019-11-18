@@ -11,11 +11,6 @@ type Thread struct {
 	Posts []database.Post
 }
 
-// ThreadsToDelete has a 'posts' slice where we'll save old threads to delete.
-type ThreadsToDelete struct {
-	Collection []database.Post
-}
-
 // GetThread returns a JSON with a thread (original post + on_thread == original post ID).
 func GetThread(id uint64) (string, error) {
 	// Make empty thread
@@ -35,19 +30,19 @@ func GetThread(id uint64) (string, error) {
 
 // DeleteOldThreads deletes any thread older than the last bump date in page 9.
 func DeleteOldThreads() (err error) {
-	// Make empty collection
-	threads := new(ThreadsToDelete)
+	// Make empty slice of IDs
+	var threads []uint64
 
-	// Query old threads and save them in the collection
-	result := db.Where("on_thread IS NULL").Order("updated_at desc").Offset(300).Find(&threads.Collection)
+	// Query ID from old threads and save them in the slice
+	result := db.Model(&database.Post{}).Offset(100).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threads)
 
-	// Check if any threads have been found
-	if len(threads.Collection) == 0 {
-		// If any record hasn't been found, return the error
+	// Check if there aren't IDs found
+	if len(threads) == 0 {
+		// If there's none, return the error
 		err = result.Error
 	} else {
-		// Delete old threads inside the collection
-		err = db.Delete(&threads.Collection).Error
+		// Delete old threads as defined in the slice
+		err = db.Where("id IN (?)", threads).Delete(&database.Post{}).Error
 	}
 
 	return
