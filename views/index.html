@@ -71,7 +71,7 @@
         - <b>content</b>: <span>[required, type: string, min: 1, max: 1000]</span> &lt;post content&gt;,<br />
         - <b>on_thread</b>: <span>[optional, type: uint64]</span> &lt;id of the thread to comment on&gt; OR null to make a new thread,<br />
         - <b>pic</b>: <span>[optional, type: string, max: 512]</span> &lt;direct external image url&gt; OR null,<br />
-        - <b>delete_code</b>: <span>[optional, type: string]</span> &lt;password to delete the post any time&gt;<br />
+        - <b>delete_code</b>: <span>[optional, type: string, max: 128]</span> &lt;password to delete the post any time&gt;<br />
     </code>
 
     <p>HOW TO DELETE</p>
