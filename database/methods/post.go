@@ -53,14 +53,17 @@ func DeletePost(id uint64, code string) (err error) {
 	// Make empty post
 	post := new(database.Post)
 
-	// Select post to delete
-	err = db.Where("id = ? AND delete_code = ?", id, code).Find(&post).Error
-	if err != nil {
-		// If it's not found, return the error
-		return
+	// Get post from the search
+	result := db.Where("id = ? AND delete_code = ?", id, code).Find(&post)
+
+	// Check if the post has been found
+	if result.RecordNotFound() {
+		// If it hasn't, return the error
+		err = result.Error
+	} else {
+		// Delete the post if the delete code is correct
+		err = db.Delete(&post).Error
 	}
 
-	// Delete the post if the delete code is correct
-	err = db.Delete(&post).Error
 	return
 }

@@ -52,7 +52,7 @@ func GetPost(ctx iris.Context) {
 	ctx.WriteString(response)
 }
 
-// TODO test implementation for POST method, it's not finished
+// SavePost handles a JSON response and saves the data as a post.
 func SavePost(ctx iris.Context) {
 	post := new(database.Post)
 
@@ -75,11 +75,15 @@ func SavePost(ctx iris.Context) {
 		post.DeleteCode = utils.RandomString(32)
 	}
 
+	// Try to save the post (or thread) and check if it has been saved
 	if response, err := methods.SavePost(post); err != nil {
 		invalidData := GetError(400)
 		ctx.WriteString(invalidData)
 	} else {
-		// TODO delete old threads when the post starts a new thread
+		// Delete old threads when the post starts a new thread
+		if post.OnThread == nil {
+			methods.DeleteOldThreads()
+		}
 		ctx.WriteString(response)
 	}
 }
