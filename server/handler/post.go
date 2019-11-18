@@ -7,8 +7,8 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/database/methods"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
 	"github.com/AquoDev/simple-imageboard-golang/server/utils"
-	"github.com/kataras/iris"
 	"github.com/asaskevich/govalidator"
+	"github.com/kataras/iris"
 )
 
 // DeleteData is a struct in which data to delete a post is parsed from JSON.
