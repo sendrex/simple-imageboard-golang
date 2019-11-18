@@ -1,11 +1,11 @@
-# Start from Golang v1.11 base image
-FROM golang:1.11-alpine
+# Start from Golang v1.13 base image
+FROM golang:1.13.4-alpine3.10
 
 # Download Git
-RUN apk add --no-cache git
+RUN apk update && apk add --no-cache git
 
 # Download the dependencies
-RUN go get -u -v github.com/AquoDev/simple-imageboard-golang/...
+RUN go get -d -v github.com/AquoDev/simple-imageboard-golang/...
 
 # Change workdir
 WORKDIR /go/src/github.com/AquoDev/simple-imageboard-golang
