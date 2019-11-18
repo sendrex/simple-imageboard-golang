@@ -2,6 +2,7 @@ package methods
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/AquoDev/simple-imageboard-golang/database"
 )
@@ -43,6 +44,25 @@ func DeleteOldThreads() (err error) {
 	} else {
 		// Delete old threads as defined in the slice
 		err = db.Where("id IN (?)", threads).Delete(&database.Post{}).Error
+	}
+
+	return
+}
+
+// BumpThread updates the post's "updated_at" field.
+func BumpThread(id uint64, updatedAt *time.Time) (err error) {
+	// Make empty thread
+	thread := new(Thread)
+
+	// Query posts that belong to a thread
+	err = db.Where("id = ?", id).Or("on_thread = ?", id).Order("id asc").Find(&thread.Posts).Error
+	if err != nil {
+		return
+	}
+
+	// If there are less than 300 posts in the thread, update it
+	if len(thread.Posts) < 300 {
+		err = db.Model(&database.Post{}).Where("id = ?", id).Update("updated_at", updatedAt).Error
 	}
 
 	return

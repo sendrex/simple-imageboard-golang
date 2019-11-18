@@ -11,12 +11,6 @@ import (
 	"github.com/kataras/iris"
 )
 
-// DeleteData is a struct in which data to delete a post is parsed from JSON.
-type DeleteData struct {
-	ID         uint64 `json:"id"`
-	DeleteCode string `json:"delete_code"`
-}
-
 // GetPostExample handles a JSON response with a how-to example.
 func GetPostExample(ctx iris.Context) {
 	ctx.JSON(iris.Map{
@@ -89,9 +83,12 @@ func SavePost(ctx iris.Context) {
 		invalidData := GetError(400)
 		ctx.WriteString(invalidData)
 	} else {
-		// Delete old threads when the post starts a new thread
 		if post.OnThread == nil {
+			// Delete old threads when the post starts a new thread
 			methods.DeleteOldThreads()
+		} else {
+			// Bump thread if it hasn't reached bump limit
+			methods.BumpThread(uint64(post.OnThread.ValueOrZero()), post.CreatedAt)
 		}
 		ctx.WriteString(response)
 	}
@@ -99,7 +96,7 @@ func SavePost(ctx iris.Context) {
 
 // DeletePost handles a JSON response with a post.
 func DeletePost(ctx iris.Context) {
-	data := new(DeleteData)
+	data := new(utils.DeleteData)
 
 	// Read JSON from body
 	if err := ctx.ReadJSON(&data); err != nil {
