@@ -18,14 +18,14 @@ func main() {
 	template := iris.HTML("./views", ".html")
 	app.RegisterView(template)
 
-	// Set robots.txt
-	app.Get("/robots.txt", handler.GetRobotsTxt)
+	// Set "Content-Type" header for every response except for the index and static files
+	app.Use(middleware.UseContentTypeJSON)
+
+	// Set robots.txt and all static content
+	app.HandleDir("/", "./static")
 
 	// Set index handler
 	app.Get("/", handler.GetIndex)
-
-	// Set "Content-Type" header for every response except for the index and static files
-	app.Use(middleware.UseContentTypeJSON)
 
 	// TODO implement CORS middleware
 
