@@ -8,10 +8,12 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/redis"
 	"github.com/AquoDev/simple-imageboard-golang/server/utils"
 	"github.com/kataras/iris"
+	"github.com/asaskevich/govalidator"
 )
 
 // DeleteData is a struct in which data to delete a post is parsed from JSON.
 type DeleteData struct {
+	ID         uint64 `json:"id"`
 	DeleteCode string `json:"delete_code"`
 }
 
@@ -70,6 +72,13 @@ func SavePost(ctx iris.Context) {
 		return
 	}
 
+	// Check if pic exists and it's an invalid URL (it should be a valid URL)
+	if post.Pic != "" && !govalidator.IsUrl(post.Pic) {
+		invalidData := GetError(400)
+		ctx.WriteString(invalidData)
+		return
+	}
+
 	// Make delete code if it hasn't one
 	if post.DeleteCode == "" {
 		post.DeleteCode = utils.RandomString(32)
@@ -92,16 +101,6 @@ func SavePost(ctx iris.Context) {
 func DeletePost(ctx iris.Context) {
 	data := new(DeleteData)
 
-	// Parse post ID
-	id := ctx.Params().GetUint64Default("id", 0)
-
-	// Try to get post from database to check if it exists
-	if _, err := methods.GetPost(id); err != nil {
-		postDoesntExist := GetError(404)
-		ctx.WriteString(postDoesntExist)
-		return
-	}
-
 	// Read JSON from body
 	if err := ctx.ReadJSON(&data); err != nil {
 		invalidData := GetError(400)
@@ -109,8 +108,15 @@ func DeletePost(ctx iris.Context) {
 		return
 	}
 
+	// Try to get post from database to check if it exists
+	if _, err := methods.GetPost(data.ID); err != nil {
+		postDoesntExist := GetError(404)
+		ctx.WriteString(postDoesntExist)
+		return
+	}
+
 	// Try to delete post (and thread if the post has "on_thread == null")
-	if err := methods.DeletePost(id, data.DeleteCode); err != nil {
+	if err := methods.DeletePost(data.ID, data.DeleteCode); err != nil {
 		incorrectCode := GetError(400)
 		ctx.WriteString(incorrectCode)
 		return

@@ -17,7 +17,7 @@ func GetPost(id uint64) (string, error) {
 	post := new(database.Post)
 
 	// Query post
-	err := db.Select("id, content, pic, on_thread, reply_to, created_at, updated_at").Where("id = ?", id).Find(&post).Error
+	err := db.Select("id, content, pic, on_thread, created_at, updated_at").Where("id = ?", id).First(&post).Error
 	if err != nil {
 		return "", err
 	}
@@ -54,9 +54,9 @@ func DeletePost(id uint64, code string) (err error) {
 	post := new(database.Post)
 
 	// Get post from the search
-	result := db.Where("id = ? AND delete_code = ?", id, code).Find(&post)
+	result := db.Where("id = ? AND delete_code = ?", id, code).First(&post)
 
-	// Check if the post has been found
+	// Check if the post hasn't been found
 	if result.RecordNotFound() {
 		// If it hasn't, return the error
 		err = result.Error

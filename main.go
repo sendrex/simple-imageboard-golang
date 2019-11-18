@@ -46,7 +46,7 @@ func main() {
 		posts.Get("/", handler.GetPostExample)
 		posts.Get("/{id:uint64 min(1)}", handler.GetPost)
 		posts.Post("/", middleware.CheckHeaders, handler.SavePost)
-		posts.Delete("/{id:uint64 min(1)}", middleware.CheckHeaders, handler.DeletePost)
+		posts.Delete("/", middleware.CheckHeaders, handler.DeletePost)
 	}
 
 	// Set 404 Not Found handler
