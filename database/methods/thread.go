@@ -22,7 +22,7 @@ func GetThread(id uint64) (string, error) {
 	thread := new(Thread)
 
 	// Query posts that belong to a thread
-	err := db.Select("id, content, pic, reply_to, created_at").Where("id = ?", id).Or("on_thread = ?", id).Order("id asc").Find(&thread.Posts).Error
+	err := db.Select("id, content, pic, created_at").Where("id = ?", id).Or("on_thread = ?", id).Order("id asc").Find(&thread.Posts).Error
 	if err != nil {
 		return "", err
 	}
@@ -42,7 +42,7 @@ func DeleteOldThreads() (err error) {
 	result := db.Where("on_thread IS NULL").Order("updated_at desc").Offset(300).Find(&threads.Collection)
 
 	// Check if any threads have been found
-	if result.RecordNotFound() {
+	if len(threads.Collection) == 0 {
 		// If any record hasn't been found, return the error
 		err = result.Error
 	} else {
