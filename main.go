@@ -15,11 +15,8 @@ func main() {
 	app := iris.New()
 
 	// Register the template directory and engine
-	template := iris.HTML("./views", ".html")
-	app.RegisterView(template)
-
-	// Set "Content-Type" header for every response except for the index and static files
-	app.Use(middleware.UseContentTypeJSON)
+	viewEngine := iris.HTML("./views", ".html")
+	app.RegisterView(viewEngine)
 
 	// Set robots.txt and all static content
 	app.HandleDir("/", "./static")
