@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/AquoDev/simple-imageboard-golang/database"
@@ -32,7 +33,10 @@ func GetPost(ctx iris.Context) {
 	response, err = redis.Client().Get(redisKey).Result()
 	// If it exists, return a response with it
 	if err == nil {
-		ctx.JSON(response)
+		post := new(database.Post)
+		cachedPost := []byte(response.(string))
+		json.Unmarshal(cachedPost, &post)
+		ctx.JSON(post)
 		return
 	}
 
@@ -43,8 +47,10 @@ func GetPost(ctx iris.Context) {
 		response = GetError(404)
 	}
 
-	// Set the cache and send the response (be it a correct or failed one)
-	redis.Client().Set(redisKey, response, 30*time.Second)
+	// Set the cache
+	cachedPost, _ := json.Marshal(response)
+	redis.Client().Set(redisKey, string(cachedPost), 30*time.Second)
+
 	ctx.JSON(response)
 }
 

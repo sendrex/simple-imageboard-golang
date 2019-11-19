@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/AquoDev/simple-imageboard-golang/database"
 	"github.com/AquoDev/simple-imageboard-golang/database/methods"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
 	"github.com/kataras/iris"
@@ -29,6 +31,9 @@ func GetThread(ctx iris.Context) {
 	response, err = redis.Client().Get(redisKey).Result()
 	// If it exists, return a response with it
 	if err == nil {
+		thread := make([]database.Post, 0)
+		cachedThread := []byte(response.(string))
+		json.Unmarshal(cachedThread, &thread)
 		ctx.JSON(response)
 		return
 	}
@@ -43,7 +48,8 @@ func GetThread(ctx iris.Context) {
 		response = GetError(404)
 	}
 
-	// Set the cache and send the response (be it a correct or failed one)
-	redis.Client().Set(redisKey, response, 15*time.Second)
+	// Set the cache
+	cachedThread, _ := json.Marshal(response)
+	redis.Client().Set(redisKey, string(cachedThread), 15*time.Second)
 	ctx.JSON(response)
 }
