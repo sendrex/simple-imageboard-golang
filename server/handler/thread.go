@@ -43,7 +43,7 @@ func GetThread(ctx iris.Context) {
 	if err != nil {
 		// If there are errors, the response will be 400 Bad Request
 		response = GetError(400)
-	} else if response == "[]" {
+	} else if len(response.([]database.Post)) == 0 {
 		// If the list is empty, the response will be 404 Not Found
 		response = GetError(404)
 	}
