@@ -10,9 +10,8 @@ No captcha. No botnet. No frontend.
 -   Redis
 -   Golang (v1.13+)
 
-Run these commands:
+Run this command to install dependencies:
 ```console
-cp .env.example .env
 go get -u -v ./...
 ```
 
@@ -21,6 +20,13 @@ go get -u -v ./...
 
 -   Docker
 -   Docker Compose
+
+### For both cases
+
+You are required to run this command:
+```console
+cp .env.example .env
+```
 
 ---
 
