@@ -6,6 +6,7 @@ import (
 
 	"github.com/AquoDev/simple-imageboard-golang/server/handler"
 	"github.com/AquoDev/simple-imageboard-golang/server/middleware"
+	"github.com/iris-contrib/middleware/secure"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/kataras/iris"
 )
@@ -13,6 +14,19 @@ import (
 func main() {
 	// Make empty Iris instance
 	app := iris.New()
+
+	// Register "secure" middleware
+	security := secure.New(secure.Options{
+		STSSeconds:              315360000,
+		STSIncludeSubdomains:    true,
+		STSPreload:              true,
+		ForceSTSHeader:          false,
+		FrameDeny:               true,
+		CustomFrameOptionsValue: "SAMEORIGIN",
+		ContentTypeNosniff:      true,
+		BrowserXSSFilter:        true,
+	})
+	app.UseGlobal(security.Serve)
 
 	// Register the template directory and engine
 	viewEngine := iris.HTML("./views", ".html")
