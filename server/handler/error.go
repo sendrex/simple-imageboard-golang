@@ -6,6 +6,7 @@ var (
 	errors = map[uint16]string{
 		400: "Bad Request",
 		404: "Not Found",
+		429: "Too Many Requests",
 		500: "Internal Server Error",
 	}
 )

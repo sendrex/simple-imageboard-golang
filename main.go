@@ -3,12 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/AquoDev/simple-imageboard-golang/server/handler"
 	"github.com/AquoDev/simple-imageboard-golang/server/middleware"
-	"github.com/didip/tollbooth"
-	"github.com/didip/tollbooth/limiter"
 	"github.com/iris-contrib/middleware/secure"
 	"github.com/iris-contrib/middleware/tollboothic"
 	_ "github.com/joho/godotenv/autoload"
@@ -33,8 +30,8 @@ func main() {
 	app.UseGlobal(security.Serve)
 
 	// Create limiters
-	regularLimiter := tollbooth.NewLimiter(10, &limiter.ExpirableOptions{DefaultExpirationTTL: 10 * time.Second})
-	strictLimiter := tollbooth.NewLimiter(2, &limiter.ExpirableOptions{DefaultExpirationTTL: 30 * time.Second})
+	regularLimiter := middleware.RegularLimiter()
+	strictLimiter := middleware.StrictLimiter()
 
 	// Register the template directory and engine
 	viewEngine := iris.HTML("./views", ".html")
@@ -63,10 +60,10 @@ func main() {
 	}
 
 	// Set post handler
-	posts := app.Party("/post", tollboothic.LimitHandler(regularLimiter))
+	posts := app.Party("/post")
 	{
-		posts.Get("/", handler.GetPostExample)
-		posts.Get("/{id:uint64 min(1)}", handler.GetPost)
+		posts.Get("/", tollboothic.LimitHandler(regularLimiter), handler.GetPostExample)
+		posts.Get("/{id:uint64 min(1)}", tollboothic.LimitHandler(regularLimiter), handler.GetPost)
 		posts.Post("/", tollboothic.LimitHandler(strictLimiter), middleware.CheckHeaders, handler.SavePost)
 		posts.Delete("/", tollboothic.LimitHandler(strictLimiter), middleware.CheckHeaders, handler.DeletePost)
 	}
