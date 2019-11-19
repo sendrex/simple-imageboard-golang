@@ -1,0 +1,13 @@
+### ABOUT THE DATABASE ###
+-> GORM <-
+
+### ABOUT THE CACHE ###
+-> Redis <-
+- how much time a post is cached:   30 seconds
+- how much time a thread is cached: 15 seconds
+- how much time a page is cached:   15 seconds
+
+### ABOUT THE SERVER ###
+-> Iris (Golang) <-
+- threads per page: 10
+- posts required to reach bump limit: 300
