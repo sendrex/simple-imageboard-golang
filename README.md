@@ -2,9 +2,16 @@
 
 No captcha. No botnet. No frontend.
 
-## Prerequisites
+[![GoDoc](https://godoc.org/github.com/AquoDev/simple-imageboard-golang?status.svg)](https://godoc.org/github.com/AquoDev/simple-imageboard-golang)
+[![Go Report Card](https://goreportcard.com/badge/github.com/AquoDev/simple-imageboard-golang)](https://goreportcard.com/report/github.com/AquoDev/simple-imageboard-golang)
+[![Latest release](https://img.shields.io/github/v/release/AquoDev/simple-imageboard-golang)](https://github.com/AquoDev/simple-imageboard-golang/releases/latest)
+![Code size in bytes](https://img.shields.io/github/languages/code-size/AquoDev/simple-imageboard-golang)
+![License](https://img.shields.io/github/license/AquoDev/simple-imageboard-golang)
 
-### For local deployment
+
+# Prerequisites
+
+## For local deployment
 
 -   PostgreSQL
 -   Redis
@@ -15,22 +22,19 @@ Run this command to install dependencies:
 go get -u -v ./...
 ```
 
-
-### For container deployment
+## For container deployment
 
 -   Docker
 -   Docker Compose
 
-### For both cases
+## For both cases
 
 You are required to run this command:
 ```console
 cp .env.example .env
 ```
 
----
-
-## Container deployment
+# Container deployment
 
 ### First run: build containers and start containers in background
 
@@ -74,11 +78,9 @@ docker-compose down -v
 docker-compose build --no-cache
 ```
 
----
+# Local deployment
 
-## Local deployment
-
-### Redis
+## Redis
 
 #### Set the same password in `.env` and `redis.conf`
 
@@ -97,7 +99,7 @@ requirepass your_pass_here
 ... (Save)
 ```
 
-### Database
+## Database
 
 #### Create database and user
 
@@ -113,7 +115,7 @@ sudo -u postgres psql
 
 `Migrations are automatically run on first start.`
 
-### Server
+## Server
 
 #### Start server
 
@@ -121,9 +123,7 @@ sudo -u postgres psql
 go run main.go
 ```
 
----
-
-## Tips
+# Tips
 
 -   First of all, **read `.env` and change the settings as you need**.
 -   You are supposed to know what you are doing, right?
