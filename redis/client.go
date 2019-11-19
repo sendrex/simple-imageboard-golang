@@ -12,8 +12,8 @@ import (
 // Redis client connection.
 var client *redis.Client
 
-// GetRedisClient returns an already connected Redis client for caching.
-func GetRedisClient() *redis.Client {
+// Client returns an already connected Redis client for caching.
+func Client() *redis.Client {
 	return client
 }
 
