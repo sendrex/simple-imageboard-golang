@@ -10,7 +10,7 @@ import (
 
 // GetThreadExample handles a JSON response with a how-to example.
 func GetThreadExample(ctx iris.Context) {
-	ctx.JSON(iris.Map{
+	ctx.JSON(map[string]string{
 		"info":    "If you want to see any thread, see the example.",
 		"example": "{url}/thread/{id}",
 	})
@@ -18,7 +18,7 @@ func GetThreadExample(ctx iris.Context) {
 
 // GetThread handles a JSON response with a number of posts defined beforehand.
 func GetThread(ctx iris.Context) {
-	var response string
+	var response interface{}
 	var err error
 
 	// Parse thread ID
@@ -26,10 +26,10 @@ func GetThread(ctx iris.Context) {
 	redisKey := redis.GetThreadKey(id)
 
 	// Get thread from cache
-	response, err = redisClient.Get(redisKey).Result()
+	response, err = redis.Client().Get(redisKey).Result()
 	// If it exists, return a response with it
 	if err == nil {
-		ctx.WriteString(response)
+		ctx.JSON(response)
 		return
 	}
 
@@ -44,6 +44,6 @@ func GetThread(ctx iris.Context) {
 	}
 
 	// Set the cache and send the response (be it a correct or failed one)
-	redisClient.Set(redisKey, response, 15*time.Second)
-	ctx.WriteString(response)
+	redis.Client().Set(redisKey, response, 15*time.Second)
+	ctx.JSON(response)
 }
