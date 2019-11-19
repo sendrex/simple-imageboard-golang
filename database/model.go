@@ -18,8 +18,8 @@ type Post struct {
 
 func init() {
 	// Make migration
-	db.AutoMigrate(&Post{})
+	connection.AutoMigrate(&Post{})
 
 	// "on_thread" should be foreign key
-	db.Model(&Post{}).AddForeignKey("on_thread", "posts(id)", "CASCADE", "RESTRICT")
+	connection.Model(&Post{}).AddForeignKey("on_thread", "posts(id)", "CASCADE", "RESTRICT")
 }

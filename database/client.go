@@ -10,11 +10,11 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-var db *gorm.DB
+var connection *gorm.DB
 
-// GetDatabaseClient returns an already connected DB client.
-func GetDatabaseClient() *gorm.DB {
-	return db
+// Client returns an already connected DB client.
+func Client() *gorm.DB {
+	return connection
 }
 
 func init() {
@@ -37,7 +37,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	} else {
-		db = conn
+		connection = conn
 		fmt.Println("Postgres: client has successfully connected")
 	}
 }

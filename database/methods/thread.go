@@ -1,49 +1,33 @@
 package methods
 
 import (
-	"encoding/json"
 	"time"
 
-	"github.com/AquoDev/simple-imageboard-golang/database"
+	db "github.com/AquoDev/simple-imageboard-golang/database"
 )
 
-// Thread has a 'posts' slice to be filled when it's requested.
-type Thread struct {
-	Posts []database.Post
-}
-
-// GetThread returns a JSON with a thread (original post + on_thread == original post ID).
-func GetThread(id uint64) (string, error) {
-	// Make empty thread
-	thread := new(Thread)
-
+// GetThread returns a slice of posts (original post + on_thread == original post ID).
+func GetThread(id uint64) (thread []db.Post, err error) {
 	// Query posts that belong to a thread
-	err := db.Select("id, content, pic, created_at").Where("id = ?", id).Or("on_thread = ?", id).Order("id asc").Find(&thread.Posts).Error
-	if err != nil {
-		return "", err
-	}
-
-	// Convert result into JSON
-	result, err := json.Marshal(thread.Posts)
-
-	return string(result), err
+	err = db.Client().Select("id, content, pic, created_at").Where("id = ?", id).Or("on_thread = ?", id).Order("id asc").Find(&thread).Error
+	return
 }
 
 // DeleteOldThreads deletes any thread older than the last bump date in page 9.
 func DeleteOldThreads() (err error) {
 	// Make empty slice of IDs
-	var threads []uint64
+	threadIDs := make([]uint64, 0)
 
 	// Query ID from old threads and save them in the slice
-	result := db.Model(&database.Post{}).Offset(100).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threads)
+	result := db.Client().Model(&db.Post{}).Offset(100).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs)
 
 	// Check if there aren't IDs found
-	if len(threads) == 0 {
+	if len(threadIDs) == 0 {
 		// If there's none, return the error
 		err = result.Error
 	} else {
 		// Delete old threads as defined in the slice
-		err = db.Where("id IN (?)", threads).Delete(&database.Post{}).Error
+		err = db.Client().Where("id IN (?)", threadIDs).Delete(&db.Post{}).Error
 	}
 
 	return
@@ -52,17 +36,17 @@ func DeleteOldThreads() (err error) {
 // BumpThread updates the post's "updated_at" field.
 func BumpThread(id uint64, updatedAt *time.Time) (err error) {
 	// Make empty thread
-	thread := new(Thread)
+	thread := make([]db.Post, 0)
 
 	// Query posts that belong to a thread
-	err = db.Where("id = ?", id).Or("on_thread = ?", id).Order("id asc").Find(&thread.Posts).Error
+	err = db.Client().Where("id = ?", id).Or("on_thread = ?", id).Order("id asc").Find(&thread).Error
 	if err != nil {
 		return
 	}
 
 	// If there are less than 300 posts in the thread, update it
-	if len(thread.Posts) < 300 {
-		err = db.Model(&database.Post{}).Where("id = ?", id).Update("updated_at", updatedAt).Error
+	if len(thread) < 300 {
+		err = db.Client().Model(&db.Post{}).Where("id = ?", id).Update("updated_at", updatedAt).Error
 	}
 
 	return
