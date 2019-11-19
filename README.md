@@ -8,28 +8,29 @@ No captcha. No botnet. No frontend.
 ![Code size in bytes](https://img.shields.io/github/languages/code-size/AquoDev/simple-imageboard-golang)
 ![License](https://img.shields.io/github/license/AquoDev/simple-imageboard-golang)
 
-
 # Prerequisites
 
-## For local deployment
+### For container deployment
+
+-   Docker
+-   Docker Compose
+
+### For local deployment
 
 -   PostgreSQL
 -   Redis
 -   Golang (v1.13+)
 
 Run this command to install dependencies:
+
 ```console
 go get -u -v ./...
 ```
 
-## For container deployment
-
--   Docker
--   Docker Compose
-
-## For both cases
+### For both cases
 
 You are required to run this command:
+
 ```console
 cp .env.example .env
 ```
@@ -80,7 +81,7 @@ docker-compose build --no-cache
 
 # Local deployment
 
-## Redis
+### Redis
 
 #### Set the same password in `.env` and `redis.conf`
 
@@ -99,7 +100,7 @@ requirepass your_pass_here
 ... (Save)
 ```
 
-## Database
+### Database
 
 #### Create database and user
 
@@ -115,7 +116,7 @@ sudo -u postgres psql
 
 `Migrations are automatically run on first start.`
 
-## Server
+### Server
 
 #### Start server
 
