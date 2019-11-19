@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🖕🏽</title>
@@ -65,22 +65,22 @@
     <p>HOW TO POST</p>
     <code>
         Header:<br />
-        - <b>Content-Type</b>: application/json; charset=utf-8<br />
+        - <b>Content-Type</b>: application/json; charset=UTF-8<br />
         <br />
         Body:<br />
-        - <b>content</b>: <span>[required, type: string, min: 1, max: 1000]</span> &lt;post content&gt;,<br />
-        - <b>on_thread</b>: <span>[optional, type: uint64]</span> &lt;id of the thread to comment on&gt; OR null to make a new thread,<br />
-        - <b>pic</b>: <span>[optional, type: string, max: 512]</span> &lt;direct external image url&gt; OR null,<br />
-        - <b>delete_code</b>: <span>[optional, type: string, max: 128]</span> &lt;password to delete the post any time&gt;<br />
+        - <b>content</b>: <span>[required, type: string, min: 1, max: 1000]</span> &lt;post content&gt;<br />
+        - <b>on_thread</b>: <span>[optional, type: uint64]</span> &lt;id of the thread to comment on&gt; OR null to make a new thread<br />
+        - <b>pic</b>: <span>[optional, type: string, max: 512]</span> &lt;direct external image url&gt; OR null<br />
+        - <b>delete_code</b>: <span>[optional, type: string, max: 128]</span> &lt;password to delete the post any time&gt; OR null to make a random one of 32 characters long<br />
     </code>
 
     <p>HOW TO DELETE</p>
     <code>
         Header:<br />
-        - <b>Content-Type</b>: application/json; charset=utf-8<br />
+        - <b>Content-Type</b>: application/json; charset=UTF-8<br />
         <br />
         Body:<br />
-        - <b>id</b>: <span>[required, type: uint64]</span> &lt;post id&gt;,<br />
+        - <b>id</b>: <span>[required, type: uint64]</span> &lt;post id&gt;<br />
         - <b>delete_code</b>: <span>[required, type: string]</span> &lt;code received after successful posting&gt;<br />
         <br />
         WARNING:<br />
