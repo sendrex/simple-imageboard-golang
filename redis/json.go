@@ -7,10 +7,8 @@ import (
 )
 
 // UnmarshalModel unmarshals any generic struct.
-func UnmarshalModel(result string, model interface{}) (err error) {
-	cachedModel := []byte(result)
-	err = json.Unmarshal(cachedModel, &model)
-	return
+func UnmarshalModel(result string, model interface{}) error {
+	return json.Unmarshal([]byte(result), &model)
 }
 
 // UnmarshalPostSlice unmarshals a post slice.
