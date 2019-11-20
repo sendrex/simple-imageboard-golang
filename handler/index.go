@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 )
 
 // GetIndex renders the index HTML.

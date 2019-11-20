@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/AquoDev/simple-imageboard-golang/database"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 )
 
 // GetThreadExample handles a JSON response with a how-to example.

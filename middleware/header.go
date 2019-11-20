@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/AquoDev/simple-imageboard-golang/handler"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 )
 
 // CheckHeaders handles a response with an error if any check fails.

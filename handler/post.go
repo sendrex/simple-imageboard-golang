@@ -6,7 +6,7 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/redis"
 	"github.com/AquoDev/simple-imageboard-golang/util"
 	"github.com/asaskevich/govalidator"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 )
 
 // GetPostExample handles a JSON response with a how-to example.

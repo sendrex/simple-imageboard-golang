@@ -9,7 +9,7 @@ import (
 	"github.com/iris-contrib/middleware/secure"
 	"github.com/iris-contrib/middleware/tollboothic"
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 )
 
 func main() {
