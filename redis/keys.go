@@ -1,6 +1,8 @@
 package redis
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // makeKey returns a string built with both arguments.
 func makeKey(prefix string, number uint64) string {

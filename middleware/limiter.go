@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/AquoDev/simple-imageboard-golang/server/handler"
+	"github.com/AquoDev/simple-imageboard-golang/handler"
 	"github.com/didip/tollbooth"
 	"github.com/didip/tollbooth/limiter"
 )
@@ -24,15 +24,13 @@ func StrictLimiter() *limiter.Limiter {
 	return strict
 }
 
-func configureLimiter(requestsPerSecond float64) (lmt *limiter.Limiter) {
-	var message interface{}
-	message = handler.GetError(429)
-	message, _ = json.Marshal(message)
-	jsonMessage := string(message.([]byte))
+func configureLimiter(requestsPerSecond float64) *limiter.Limiter {
+	message, err := json.Marshal(handler.GetError(429))
+	if err != nil {
+		panic(err)
+	}
 
-	lmt = tollbooth.NewLimiter(requestsPerSecond, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour}).SetMessage(jsonMessage).SetMessageContentType("application/json; charset=UTF-8").SetStatusCode(200)
-
-	return
+	return tollbooth.NewLimiter(requestsPerSecond, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour}).SetMessage(string(message)).SetMessageContentType("application/json; charset=UTF-8").SetStatusCode(200)
 }
 
 func init() {

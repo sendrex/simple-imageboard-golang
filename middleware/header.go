@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/AquoDev/simple-imageboard-golang/server/handler"
+	"github.com/AquoDev/simple-imageboard-golang/handler"
 	"github.com/kataras/iris"
 )
 

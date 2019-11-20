@@ -1,15 +1,15 @@
 package handler
 
-import "github.com/kataras/iris"
-
-var (
-	errors = map[uint16]string{
-		400: "Bad Request",
-		404: "Not Found",
-		429: "Too Many Requests",
-		500: "Internal Server Error",
-	}
+import (
+	"github.com/kataras/iris"
 )
+
+var errors = map[uint16]string{
+	400: "Bad Request",
+	404: "Not Found",
+	429: "Too Many Requests",
+	500: "Internal Server Error",
+}
 
 // GetError returns a map structure with a <status> <message> response.
 func GetError(status uint16) (response map[string]interface{}) {

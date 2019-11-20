@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/AquoDev/simple-imageboard-golang/server/handler"
-	"github.com/AquoDev/simple-imageboard-golang/server/middleware"
+	"github.com/AquoDev/simple-imageboard-golang/handler"
+	"github.com/AquoDev/simple-imageboard-golang/middleware"
 	"github.com/iris-contrib/middleware/secure"
 	"github.com/iris-contrib/middleware/tollboothic"
 	_ "github.com/joho/godotenv/autoload"
@@ -34,7 +34,7 @@ func main() {
 	strictLimiter := middleware.StrictLimiter()
 
 	// Register the template directory and engine
-	viewEngine := iris.HTML("./views", ".html")
+	viewEngine := iris.HTML("./view", ".html")
 	app.RegisterView(viewEngine)
 
 	// Set robots.txt and all static content

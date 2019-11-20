@@ -1,13 +1,10 @@
 package handler
 
 import (
-	"encoding/json"
-	"time"
-
 	"github.com/AquoDev/simple-imageboard-golang/database"
-	"github.com/AquoDev/simple-imageboard-golang/database/methods"
+	"github.com/AquoDev/simple-imageboard-golang/model"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
-	"github.com/AquoDev/simple-imageboard-golang/server/utils"
+	"github.com/AquoDev/simple-imageboard-golang/util"
 	"github.com/asaskevich/govalidator"
 	"github.com/kataras/iris"
 )
@@ -22,41 +19,33 @@ func GetPostExample(ctx iris.Context) {
 
 // GetPost handles a JSON response with a post.
 func GetPost(ctx iris.Context) {
-	var response interface{}
-	var err error
-
 	// Parse post ID
 	id := ctx.Params().GetUint64Default("id", 0)
-	redisKey := redis.GetPostKey(id)
 
 	// Get post from cache
-	response, err = redis.Client().Get(redisKey).Result()
-	// If it exists, return a response with it
-	if err == nil {
-		post := new(database.Post)
-		cachedPost := []byte(response.(string))
-		json.Unmarshal(cachedPost, &post)
-		ctx.JSON(post)
+	if response, err := redis.GetCachedPost(id); err == nil {
+		// If it exists, return a response with it
+		ctx.JSON(response)
 		return
 	}
 
 	// If it couldn't be found in cache, get it from the database
-	response, err = methods.GetPost(id)
-	if err != nil {
-		// If the post isn't found, the response will be 404 Not Found
-		response = GetError(404)
+	if response, err := database.GetPost(id); err == nil {
+		// If it exists, set the cache and send the post
+		redis.SetCachedPost(id, response)
+		ctx.JSON(response)
+		return
 	}
 
-	// Set the cache
-	cachedPost, _ := json.Marshal(response)
-	redis.Client().Set(redisKey, string(cachedPost), 30*time.Second)
-
+	// At last, send 404 Not Found if the post doesn't exist and set the cache
+	response := GetError(404)
+	redis.SetErrorCachedPost(id, response)
 	ctx.JSON(response)
 }
 
 // SavePost handles a JSON response and saves the data as a post.
 func SavePost(ctx iris.Context) {
-	post := new(database.Post)
+	post := new(model.Post)
 
 	// Read JSON from body
 	if err := ctx.ReadJSON(&post); err != nil {
@@ -88,20 +77,20 @@ func SavePost(ctx iris.Context) {
 
 	// Make delete code if it hasn't one
 	if post.DeleteCode == "" {
-		post.DeleteCode = utils.RandomString(32)
+		post.DeleteCode = util.RandomString(32)
 	}
 
 	// Try to save the post (or thread) and check if it has been saved
-	if response, err := methods.SavePost(post); err != nil {
+	if response, err := database.SavePost(post); err != nil {
 		invalidData := GetError(400)
 		ctx.JSON(invalidData)
 	} else {
 		if post.OnThread == nil {
 			// Delete old threads when the post starts a new thread
-			methods.DeleteOldThreads()
+			database.DeleteOldThreads()
 		} else {
 			// Bump thread if it hasn't reached bump limit
-			methods.BumpThread(uint64(post.OnThread.ValueOrZero()), post.CreatedAt)
+			database.BumpThread(uint64(post.OnThread.ValueOrZero()), post.CreatedAt)
 		}
 		ctx.JSON(response)
 	}
@@ -109,7 +98,7 @@ func SavePost(ctx iris.Context) {
 
 // DeletePost handles a JSON response with a post.
 func DeletePost(ctx iris.Context) {
-	data := new(utils.DeleteData)
+	data := new(model.DeleteData)
 
 	// Read JSON from body
 	if err := ctx.ReadJSON(&data); err != nil {
@@ -119,21 +108,21 @@ func DeletePost(ctx iris.Context) {
 	}
 
 	// Try to get post from database to check if it exists
-	if _, err := methods.GetPost(data.ID); err != nil {
+	if _, err := database.GetPost(data.ID); err != nil {
 		postDoesntExist := GetError(404)
 		ctx.JSON(postDoesntExist)
 		return
 	}
 
 	// Try to delete post (and thread if the post has "on_thread == null")
-	if err := methods.DeletePost(data.ID, data.DeleteCode); err != nil {
+	if err := database.DeletePost(data.ID, data.DeleteCode); err != nil {
 		incorrectCode := GetError(400)
 		ctx.JSON(incorrectCode)
 		return
 	}
 
 	ctx.JSON(map[string]interface{}{
+		"message": "success",
 		"status":  200,
-		"message": "Success",
 	})
 }

@@ -5,7 +5,7 @@ import (
 )
 
 // GetPost returns a post.
-func GetPost(id uint64) (post model.Post, err error) {
+func GetPost(id uint64) (post *model.Post, err error) {
 	// Query post
 	err = db.Select("id, content, pic, on_thread, created_at, updated_at").Where("id = ?", id).First(&post).Error
 	return

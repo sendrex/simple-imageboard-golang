@@ -1,6 +1,8 @@
-package utils
+package util
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 // RandomString makes a random string from predefined characters.
 func RandomString(length int) string {
