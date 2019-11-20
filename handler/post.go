@@ -54,6 +54,8 @@ func SavePost(ctx iris.Context) {
 		return
 	}
 
+	// TODO refactor validation logic
+
 	// Check if content has characters
 	if len(post.Content) == 0 {
 		invalidData := GetError(400)
