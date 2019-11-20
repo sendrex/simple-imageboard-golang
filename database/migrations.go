@@ -8,10 +8,14 @@ import (
 
 func init() {
 	// Make migration
-	db.AutoMigrate(&model.Post{})
+	if err := db.AutoMigrate(&model.Post{}).Error; err != nil {
+		panic(err)
+	}
 
 	// "on_thread" should be foreign key
-	db.Model(&model.Post{}).AddForeignKey("on_thread", "posts(id)", "CASCADE", "RESTRICT")
+	if err := db.Model(&model.Post{}).AddForeignKey("on_thread", "posts(id)", "CASCADE", "RESTRICT").Error; err != nil {
+		panic(err)
+	}
 
 	fmt.Println("Migrations are done")
 }
