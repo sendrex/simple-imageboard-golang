@@ -39,7 +39,7 @@ func GetPost(ctx iris.Context) {
 
 	// At last, send 404 Not Found if the post doesn't exist and set the cache
 	response := GetError(404)
-	redis.SetErrorCachedPost(id, response)
+	redis.SetCachedPost(id, response)
 	ctx.JSON(response)
 }
 

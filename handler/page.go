@@ -36,6 +36,6 @@ func GetPage(ctx iris.Context) {
 
 	// At last, send 500 Internal Server error and set the cache
 	response := GetError(500)
-	redis.SetErrorCachedPage(id, response)
+	redis.SetCachedPage(id, response)
 	ctx.JSON(response)
 }

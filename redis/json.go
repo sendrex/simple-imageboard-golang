@@ -2,31 +2,15 @@ package redis
 
 import (
 	"encoding/json"
-
-	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
 // UnmarshalModel unmarshals any generic struct.
-func UnmarshalModel(result string, model interface{}) error {
-	return json.Unmarshal([]byte(result), &model)
-}
-
-// UnmarshalPostSlice unmarshals a post slice.
-func UnmarshalPostSlice(result string) ([]model.Post, error) {
-	postSlice := make([]model.Post, 0)
-	if err := UnmarshalModel(result, &postSlice); err != nil {
+func UnmarshalModel(result string) (*map[string]interface{}, error) {
+	model := new(map[string]interface{})
+	if err := json.Unmarshal([]byte(result), &model); err != nil {
 		return nil, err
 	}
-	return postSlice, nil
-}
-
-// UnmarshalPost unmarshals a single post.
-func UnmarshalPost(result string) (*model.Post, error) {
-	post := new(model.Post)
-	if err := UnmarshalModel(result, &post); err != nil {
-		return nil, err
-	}
-	return post, nil
+	return model, nil
 }
 
 // MarshalModel marshals any generic struct or interface.

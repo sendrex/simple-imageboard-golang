@@ -2,8 +2,7 @@ package redis
 
 import (
 	"fmt"
-
-	"github.com/AquoDev/simple-imageboard-golang/model"
+	"time"
 )
 
 // makeKey returns a string built with both arguments.
@@ -11,19 +10,25 @@ func makeKey(prefix string, number uint64) string {
 	return fmt.Sprintf("%s:%d", prefix, number)
 }
 
-// getCachedPage returns a cached post slice (used for pages and threads).
-func getCachedPostSlice(key string) ([]model.Post, error) {
-	// Get cached result for this key
+// getCachedModel returns a generic cached model.
+func getCachedModel(key string) (*map[string]interface{}, error) {
+	// Get cached page/error
 	result, err := client.Get(key).Result()
 	if err != nil {
 		return nil, err
 	}
 
-	// Unmarshal result to a post slice
-	postSlice, err := UnmarshalPostSlice(result)
+	// Parse and return cached page/error
+	return UnmarshalModel(result)
+}
+
+// setCachedModel caches any generic struct or interface.
+func setCachedModel(key string, data interface{}, duration time.Duration) error {
+	// Marshal page/error into JSON
+	cachedData, err := MarshalModel(data)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return postSlice, nil
+	return client.Set(key, string(cachedData), duration*time.Second).Err()
 }

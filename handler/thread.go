@@ -36,6 +36,6 @@ func GetThread(ctx iris.Context) {
 
 	// At last, send 404 Not Found if the thread doesn't exist and set the cache
 	response := GetError(404)
-	redis.SetErrorCachedThread(id, response)
+	redis.SetCachedThread(id, response)
 	ctx.JSON(response)
 }
