@@ -1,12 +1,13 @@
-# Simple Imageboard
-
-No captcha. No botnet. No frontend.
-
 [![GoDoc](https://godoc.org/github.com/AquoDev/simple-imageboard-golang?status.svg)](https://godoc.org/github.com/AquoDev/simple-imageboard-golang)
 [![Go Report Card](https://goreportcard.com/badge/github.com/AquoDev/simple-imageboard-golang)](https://goreportcard.com/report/github.com/AquoDev/simple-imageboard-golang)
 [![Latest release](https://img.shields.io/github/v/release/AquoDev/simple-imageboard-golang)](https://github.com/AquoDev/simple-imageboard-golang/releases/latest)
 ![Code size in bytes](https://img.shields.io/github/languages/code-size/AquoDev/simple-imageboard-golang)
 ![License](https://img.shields.io/github/license/AquoDev/simple-imageboard-golang)
+
+# Simple Imageboard
+
+![Diagram](https://i.imgur.com/8YVWuRM.png)
+**Everything is a post.**
 
 # Prerequisites
 
