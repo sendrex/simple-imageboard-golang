@@ -5,10 +5,14 @@ import (
 )
 
 // GetPost returns a post.
-func GetPost(id uint64) (post *model.Post, err error) {
+func GetPost(id uint64) (*model.Post, error) {
+	// Make empty post
+	post := new(model.Post)
+
 	// Query post
-	err = db.Select("id, content, pic, on_thread, created_at, updated_at").Where("id = ?", id).First(&post).Error
-	return
+	err := db.Select("id, content, pic, on_thread, created_at, updated_at").Where("id = ?", id).First(&post).Error
+
+	return post, err
 }
 
 // SavePost returns a struct with the ID and delete code of the inserted post.
@@ -32,7 +36,7 @@ func DeletePost(id uint64, code string) (err error) {
 	// Make empty post
 	post := new(model.Post)
 
-	// Get post from the search
+	// Query post
 	result := db.Where("id = ? AND delete_code = ?", id, code).First(&post)
 
 	// Check if the post hasn't been found
