@@ -36,5 +36,5 @@ func configureLimiter(requestsPerSecond float64) *limiter.Limiter {
 func init() {
 	regular = configureLimiter(3)
 	strict = configureLimiter(0.1)
-	fmt.Println("Limiters are now configured")
+	fmt.Println("Limiters: OK")
 }

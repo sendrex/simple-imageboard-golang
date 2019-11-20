@@ -17,5 +17,5 @@ func init() {
 		panic(err)
 	}
 
-	fmt.Println("Migrations are done")
+	fmt.Println("Migrations: OK")
 }
