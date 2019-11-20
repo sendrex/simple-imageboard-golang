@@ -25,7 +25,7 @@
 Run this command to install dependencies:
 
 ```console
-go get -u -v ./...
+go get -v ./...
 ```
 
 ### For both cases

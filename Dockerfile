@@ -5,7 +5,7 @@ FROM golang:1.13.4-alpine3.10
 RUN apk update && apk add --no-cache git
 
 # Download the dependencies
-RUN go get -d -v github.com/AquoDev/simple-imageboard-golang/...
+RUN go get -v github.com/AquoDev/simple-imageboard-golang
 
 # Change workdir
 WORKDIR /go/src/github.com/AquoDev/simple-imageboard-golang
