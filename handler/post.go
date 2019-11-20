@@ -5,7 +5,6 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/model"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
 	"github.com/AquoDev/simple-imageboard-golang/util"
-	"github.com/asaskevich/govalidator"
 	"github.com/kataras/iris/v12"
 )
 
@@ -54,24 +53,8 @@ func SavePost(ctx iris.Context) {
 		return
 	}
 
-	// TODO refactor validation logic
-
-	// Check if content has characters
-	if len(post.Content) == 0 {
-		invalidData := GetError(400)
-		ctx.JSON(invalidData)
-		return
-	}
-
-	// Check if it has already an ID (it shouldn't have)
-	if post.ID != 0 {
-		invalidData := GetError(400)
-		ctx.JSON(invalidData)
-		return
-	}
-
-	// Check if pic exists and it's an invalid URL (it should be a valid URL)
-	if post.Pic != nil && !govalidator.IsURL(post.Pic.String) {
+	// Check if post is not valid
+	if err := post.Check(); err != nil {
 		invalidData := GetError(400)
 		ctx.JSON(invalidData)
 		return
