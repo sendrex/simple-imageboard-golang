@@ -20,7 +20,7 @@ func GetPage(ctx iris.Context) {
 	id := ctx.Params().GetUint64Default("id", 0)
 
 	// Get page from cache
-	if response, err := redis.GetCachedThread(id); err == nil {
+	if response, err := redis.GetCachedPage(id); err == nil {
 		// If it exists, return a response with it
 		ctx.JSON(response)
 		return
