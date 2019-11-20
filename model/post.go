@@ -14,4 +14,5 @@ type Post struct {
 	DeleteCode string       `json:"delete_code,omitempty" gorm:"not null;size:128"`
 	CreatedAt  *time.Time   `json:"created_at" gorm:"not null;default:CURRENT_TIMESTAMP"`
 	UpdatedAt  *time.Time   `json:"updated_at,omitempty" gorm:"not null;default:CURRENT_TIMESTAMP"`
+	Replies    uint64       `json:"replies,omitempty"` // omitempty: "replies" is NOT shown if == 0
 }

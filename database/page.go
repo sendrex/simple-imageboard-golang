@@ -10,7 +10,9 @@ func GetPage(id uint64) ([]model.Post, error) {
 	page := make([]model.Post, 0)
 
 	// Query posts that started a thread (on_thread == null)
-	err := db.Select("id, content, pic, created_at, updated_at").Offset(10 * id).Limit(10).Where("on_thread IS NULL").Order("updated_at desc").Find(&page).Error
+	if err := db.Select("posts.id, posts.content, posts.pic, posts.created_at, posts.updated_at, count(b.on_thread) as replies").Joins("LEFT JOIN posts b ON b.on_thread = posts.id").Offset(10 * id).Limit(10).Where("posts.on_thread IS NULL").Group("posts.id").Order("posts.updated_at desc").Find(&page).Error; err != nil {
+		return nil, err
+	}
 
-	return page, err
+	return page, nil
 }
