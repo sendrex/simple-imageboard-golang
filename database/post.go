@@ -18,18 +18,15 @@ func GetPost(id uint64) (*model.Post, error) {
 // SavePost returns a struct with the ID and delete code of the inserted post.
 func SavePost(post *model.Post) (*model.DeleteData, error) {
 	// Try to insert the post
-	err := db.Create(&post).Error
-	if err != nil {
+	if err := db.Create(&post).Error; err != nil {
 		return nil, err
 	}
 
-	// If it's inserted, parse data
-	result := &model.DeleteData{
+	// If it's inserted, parse data and return it
+	return &model.DeleteData{
 		ID:         post.ID,
 		DeleteCode: post.DeleteCode,
-	}
-
-	return result, nil
+	}, nil
 }
 
 // DeletePost returns an error that should be checked in the handler.
@@ -39,11 +36,8 @@ func DeletePost(id uint64, code string) error {
 	// Make empty post
 	post := new(model.Post)
 
-	// Query post
-	result := db.Where("id = ? AND delete_code = ?", id, code).First(&post)
-
-	// Check if the post hasn't been found
-	if result.RecordNotFound() {
+	// Query post and check if the post hasn't been found
+	if result := db.Where("id = ? AND delete_code = ?", id, code).First(&post); result.RecordNotFound() {
 		// If it hasn't, return the error
 		return result.Error
 	}

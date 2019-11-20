@@ -22,11 +22,8 @@ func DeleteOldThreads() error {
 	// Make empty slice of IDs
 	threadIDs := make([]uint64, 0)
 
-	// Query ID from old threads and save them in the slice
-	result := db.Model(&model.Post{}).Offset(100).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs)
-
-	// Check if there aren't IDs found
-	if len(threadIDs) == 0 {
+	// Query ID from old threads and save them in the slice and check if there aren't IDs found
+	if result := db.Model(&model.Post{}).Offset(100).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs); len(threadIDs) == 0 {
 		// If there's none, return the error
 		return result.Error
 	}
