@@ -11,7 +11,7 @@ RUN go get -d -v github.com/AquoDev/simple-imageboard-golang/...
 WORKDIR /go/src/github.com/AquoDev/simple-imageboard-golang
 
 # Rename .env file
-RUN mv .env.example .env
+RUN cp .env.example .env
 
 # Run the server
 CMD ["go", "run", "main.go"]
