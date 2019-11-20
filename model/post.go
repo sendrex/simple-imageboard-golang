@@ -1,4 +1,4 @@
-package database
+package model
 
 import (
 	"gopkg.in/guregu/null.v3"
@@ -14,12 +14,4 @@ type Post struct {
 	DeleteCode string       `json:"delete_code,omitempty" gorm:"not null;size:128"`
 	CreatedAt  *time.Time   `json:"created_at" gorm:"not null;default:CURRENT_TIMESTAMP"`
 	UpdatedAt  *time.Time   `json:"updated_at,omitempty" gorm:"not null;default:CURRENT_TIMESTAMP"`
-}
-
-func init() {
-	// Make migration
-	connection.AutoMigrate(&Post{})
-
-	// "on_thread" should be foreign key
-	connection.Model(&Post{}).AddForeignKey("on_thread", "posts(id)", "CASCADE", "RESTRICT")
 }
