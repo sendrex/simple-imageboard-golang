@@ -7,6 +7,7 @@ services:
     sysctls:
       net.core.somaxconn: 1024
     container_name: redis-si-go
+    hostname: redis
     networks:
       - internal_network
     #ports:
@@ -16,7 +17,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    command: ["redis-server", "--port", "${REDIS_PORT}", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
+    command:
+      [
+        "redis-server",
+        "--port",
+        "${REDIS_PORT}",
+        "--requirepass",
+        "${REDIS_PASSWORD}",
+        "--appendonly",
+        "yes",
+      ]
     volumes:
       - redis-data:/data
 
@@ -24,12 +34,23 @@ services:
     image: postgres:12.0-alpine
     restart: always
     container_name: pgsql-si-go
+    hostname: database
     networks:
       - internal_network
     #ports:
     #  - "${DB_PORT}:${DB_PORT}"
     healthcheck:
-      test: ["CMD", "pg_isready", "-p", "${DB_PORT}", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-p",
+          "${DB_PORT}",
+          "-U",
+          "${DB_USER}",
+          "-d",
+          "${DB_NAME}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
