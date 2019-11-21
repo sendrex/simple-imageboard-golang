@@ -12,19 +12,19 @@ func makeKey(prefix string, number uint64) string {
 
 // getCachedModel returns a generic cached model.
 func getCachedModel(key string) (*map[string]interface{}, error) {
-	// Get cached page/error
+	// Get cached result
 	result, err := client.Get(key).Result()
 	if err != nil {
 		return nil, err
 	}
 
-	// Parse and return cached page/error
+	// Parse and return cached result
 	return UnmarshalModel(result)
 }
 
-// setCachedModel caches any generic struct or interface.
+// setCachedModel caches any generic struct or interface as a JSON string.
 func setCachedModel(key string, data interface{}, duration time.Duration) error {
-	// Marshal page/error into JSON
+	// Marshal data into a JSON string
 	cachedData, err := MarshalModel(data)
 	if err != nil {
 		return err

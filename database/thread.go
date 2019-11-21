@@ -36,7 +36,7 @@ func DeleteOldThreads() error {
 
 // BumpThread updates the post's "updated_at" field.
 func BumpThread(id uint64, updatedAt *time.Time) error {
-	// Make empty thread
+	// Make thread length var
 	var threadLength uint64
 
 	// Query posts that belong to a thread
