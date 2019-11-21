@@ -8,6 +8,6 @@
 - how much time a page is cached:   10 seconds
 
 ### ABOUT THE SERVER ###
--> Iris (Golang) <-
+-> Echo (Golang) <-
 - threads per page: 10
 - posts required to reach bump limit: 300
