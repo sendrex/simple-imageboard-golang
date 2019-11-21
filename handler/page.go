@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"strconv"
 	"net/http"
+	"strconv"
 
 	"github.com/AquoDev/simple-imageboard-golang/database"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
