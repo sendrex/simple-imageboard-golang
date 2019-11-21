@@ -10,6 +10,7 @@ require (
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/imkira/go-interpol v1.1.0 // indirect
+	github.com/iris-contrib/middleware/cors v0.0.0-20191111233249-6e1f5f92190e
 	github.com/iris-contrib/middleware/secure v0.0.0-20191111233249-6e1f5f92190e
 	github.com/iris-contrib/middleware/tollboothic v0.0.0-20191111233249-6e1f5f92190e
 	github.com/jinzhu/gorm v1.9.11
