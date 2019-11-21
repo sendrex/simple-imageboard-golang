@@ -25,7 +25,7 @@ func DeleteOldThreads() error {
 	threadIDs := make([]uint64, 0)
 
 	// Query ID from old threads and save them in the slice and check if there aren't IDs found
-	if result := db.Model(&model.Post{}).Offset(100).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs); len(threadIDs) == 0 {
+	if result := db.Model(&model.Post{}).Offset(maxRootThreads).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs); len(threadIDs) == 0 {
 		// If there's none, return the error
 		return result.Error
 	}
@@ -44,8 +44,8 @@ func BumpThread(id uint64, updatedAt *time.Time) error {
 		return err
 	}
 
-	// If there are less than 300 posts in the thread, update it
-	if threadLength < 300 {
+	// If there are less than "max" posts in the thread, update it
+	if threadLength < postsPerThread {
 		return db.Model(&model.Post{}).Where("id = ?", id).Update("updated_at", updatedAt).Error
 	}
 
