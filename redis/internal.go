@@ -30,5 +30,5 @@ func setCachedModel(key string, data interface{}, duration time.Duration) error 
 		return err
 	}
 
-	return client.Set(key, string(cachedData), duration*time.Second).Err()
+	return client.Set(key, string(cachedData), duration).Err()
 }
