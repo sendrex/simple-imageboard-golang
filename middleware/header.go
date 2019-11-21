@@ -1,18 +1,18 @@
 package middleware
 
 import (
-	"github.com/AquoDev/simple-imageboard-golang/handler"
-	"github.com/kataras/iris/v12"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // CheckHeaders handles a response with an error if any check fails.
-func CheckHeaders(ctx iris.Context) {
-	// Check "Content-Type"
-	if ctx.GetHeader("Content-Type") != "application/json; charset=UTF-8" {
-		invalidHeader := handler.GetError(400)
-		ctx.JSON(invalidHeader)
-		return
+func CheckHeaders(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		// Check "Content-Type"
+		if ctx.Request().Header.Get("Content-Type") != "application/json; charset=UTF-8" {
+			return echo.NewHTTPError(http.StatusBadRequest)
+		}
+		return next(ctx)
 	}
-
-	ctx.Next()
 }

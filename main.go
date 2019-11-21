@@ -6,64 +6,49 @@ import (
 
 	"github.com/AquoDev/simple-imageboard-golang/handler"
 	"github.com/AquoDev/simple-imageboard-golang/middleware"
-	"github.com/iris-contrib/middleware/tollboothic"
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/kataras/iris/v12"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
 	// Make empty Iris instance
-	app := iris.New()
+	app := echo.New()
+
+	// Remove trailing slash from URLs
+	app.Pre(middleware.RemoveTrailingSlash())
 
 	// Register "secure" middleware
-	security := middleware.GetSecurity()
-	app.UseGlobal(security.Serve)
+	app.Use(middleware.Secure())
 
-	// Create limiters
-	regularLimiter := middleware.RegularLimiter()
-	strictLimiter := middleware.StrictLimiter()
-
-	// Register the template directory and engine
-	viewEngine := iris.HTML("./view", ".html")
-	app.RegisterView(viewEngine)
-
-	// Set robots.txt and all static content
-	app.HandleDir("/", "./static")
-
-	// Set index handler
-	app.Get("/", handler.GetIndex)
+	// TODO Request limiter middleware (example: https://github.com/ulule/limiter-examples/blob/master/echo/main.go)
 
 	// Set CORS middlewares
 	corsPost := middleware.GetCORSpost()
 	corsDefault := middleware.GetCORSdefault()
 
-	// Set page handler
-	pages := app.Party("/page", corsDefault, tollboothic.LimitHandler(regularLimiter)).AllowMethods(iris.MethodOptions)
-	{
-		pages.Get("/", handler.GetPageExample)
-		pages.Get("/{id:uint8 min(0) max(9)}", handler.GetPage)
-	}
+	// Set all static content
+	app.Static("/", "./static")
 
-	// Set thread handler
-	threads := app.Party("/thread", corsDefault, tollboothic.LimitHandler(regularLimiter)).AllowMethods(iris.MethodOptions)
-	{
-		threads.Get("/", handler.GetThreadExample)
-		threads.Get("/{id:uint64 min(1)}", handler.GetThread)
-	}
+	// Set page routing
+	pages := app.Group("/page", corsDefault)
+	pages.GET("", handler.GetPageExample)
+	pages.GET("/:id", handler.GetPage)
 
-	// Set post handler
-	posts := app.Party("/post", corsPost).AllowMethods(iris.MethodOptions)
-	{
-		posts.Get("/", tollboothic.LimitHandler(regularLimiter), handler.GetPostExample)
-		posts.Get("/{id:uint64 min(1)}", tollboothic.LimitHandler(regularLimiter), handler.GetPost)
-		posts.Post("/", tollboothic.LimitHandler(strictLimiter), middleware.CheckHeaders, handler.SavePost)
-		posts.Delete("/", tollboothic.LimitHandler(strictLimiter), middleware.CheckHeaders, handler.DeletePost)
-	}
+	// Set thread routing
+	threads := app.Group("/thread", corsDefault)
+	threads.GET("", handler.GetThreadExample)
+	threads.GET("/:id", handler.GetThread)
 
-	// Set 404 Not Found handler
-	app.OnAnyErrorCode(handler.PathNotFound)
+	// Set post routing
+	posts := app.Group("/post", corsPost)
+	posts.GET("", handler.GetPostExample)
+	posts.GET("/:id", handler.GetPost)
+	posts.POST("", handler.SavePost, middleware.CheckHeaders)
+	posts.DELETE("", handler.DeletePost, middleware.CheckHeaders)
+
+	// TODO Custom error handler
 
 	// Start server
 	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
-	app.Run(iris.Addr(addr))
+	app.Logger.Fatal(app.Start(addr))
 }
