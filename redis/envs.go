@@ -39,5 +39,5 @@ func init() {
 		maxTimePost = parsedTime
 	}
 
-	fmt.Println("All Redis expiry times parsed successfully")
+	fmt.Println("[REDIS]: Expiration times OK")
 }

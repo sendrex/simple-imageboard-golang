@@ -1,16 +1,25 @@
 package redis
 
-// GetPageKey returns a string that corresponds to a 'page' key in Redis.
-func GetPageKey(id uint64) string {
+import (
+	"fmt"
+)
+
+// makeKey returns a string built with both arguments.
+func makeKey(prefix string, number uint64) string {
+	return fmt.Sprintf("%s:%d", prefix, number)
+}
+
+// getPageKey returns a string that corresponds to a 'page' key in Redis.
+func getPageKey(id uint64) string {
 	return makeKey("page", id)
 }
 
-// GetThreadKey returns a string that corresponds to a 'thread' key in Redis.
-func GetThreadKey(id uint64) string {
+// getThreadKey returns a string that corresponds to a 'thread' key in Redis.
+func getThreadKey(id uint64) string {
 	return makeKey("thread", id)
 }
 
-// GetPostKey returns a string that corresponds to a 'post' key in Redis.
-func GetPostKey(id uint64) string {
+// getPostKey returns a string that corresponds to a 'post' key in Redis.
+func getPostKey(id uint64) string {
 	return makeKey("post", id)
 }

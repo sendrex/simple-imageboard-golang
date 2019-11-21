@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v7"
 	"github.com/joho/godotenv"
 )
 
@@ -33,9 +33,11 @@ func init() {
 
 	// Connect the client
 	client = redis.NewClient(&redis.Options{
-		Addr:     addr,
-		Password: password,
-		DB:       db,
+		Addr:       addr,
+		PoolSize:   100,
+		MaxRetries: 2,
+		Password:   password,
+		DB:         db,
 	})
 
 	// Check if it's connected
@@ -45,5 +47,5 @@ func init() {
 	}
 
 	// Show the result
-	fmt.Printf("Redis: %s received\n", pong)
+	fmt.Printf("[REDIS]: %s received\n", pong)
 }
