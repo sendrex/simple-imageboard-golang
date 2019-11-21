@@ -4,14 +4,14 @@ FROM golang:1.13.4-alpine3.10
 # Download Git
 RUN apk update && apk add --no-cache git
 
-# Download the dependencies
-RUN go get -v github.com/AquoDev/simple-imageboard-golang
+# Clone this repo
+RUN git clone https://github.com/AquoDev/simple-imageboard-golang.git $GOPATH/src/github.com/AquoDev/simple-imageboard-golang
 
 # Change workdir
-WORKDIR /go/src/github.com/AquoDev/simple-imageboard-golang
+WORKDIR $GOPATH/src/github.com/AquoDev/simple-imageboard-golang
 
-# Rename .env file
+# Make .env file from .env.example
 RUN cp .env.example .env
 
-# Run the server
+# Start server (on go.mod/go.sum changes or first run it will download and install dependencies)
 CMD ["go", "run", "main.go"]
