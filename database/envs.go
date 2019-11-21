@@ -31,5 +31,5 @@ func init() {
 
 	maxRootThreads = threadsPerPage * 10
 
-	fmt.Println("All board settings parsed successfully")
+	fmt.Println("[DATABASE]: Board settings OK")
 }
