@@ -6,7 +6,6 @@ import (
 
 	"github.com/AquoDev/simple-imageboard-golang/handler"
 	"github.com/AquoDev/simple-imageboard-golang/middleware"
-	"github.com/iris-contrib/middleware/secure"
 	"github.com/iris-contrib/middleware/tollboothic"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/kataras/iris/v12"
@@ -17,16 +16,7 @@ func main() {
 	app := iris.New()
 
 	// Register "secure" middleware
-	security := secure.New(secure.Options{
-		STSSeconds:              315360000,
-		STSIncludeSubdomains:    true,
-		STSPreload:              true,
-		ForceSTSHeader:          false,
-		FrameDeny:               true,
-		CustomFrameOptionsValue: "SAMEORIGIN",
-		ContentTypeNosniff:      true,
-		BrowserXSSFilter:        true,
-	})
+	security := middleware.GetSecurity()
 	app.UseGlobal(security.Serve)
 
 	// Create limiters
@@ -43,24 +33,26 @@ func main() {
 	// Set index handler
 	app.Get("/", handler.GetIndex)
 
-	// TODO implement CORS middleware
+	// Set CORS middlewares
+	corsPost := middleware.GetCORSpost()
+	corsDefault := middleware.GetCORSdefault()
 
 	// Set page handler
-	pages := app.Party("/page", tollboothic.LimitHandler(regularLimiter))
+	pages := app.Party("/page", corsDefault, tollboothic.LimitHandler(regularLimiter)).AllowMethods(iris.MethodOptions)
 	{
 		pages.Get("/", handler.GetPageExample)
 		pages.Get("/{id:uint8 min(0) max(9)}", handler.GetPage)
 	}
 
 	// Set thread handler
-	threads := app.Party("/thread", tollboothic.LimitHandler(regularLimiter))
+	threads := app.Party("/thread", corsDefault, tollboothic.LimitHandler(regularLimiter)).AllowMethods(iris.MethodOptions)
 	{
 		threads.Get("/", handler.GetThreadExample)
 		threads.Get("/{id:uint64 min(1)}", handler.GetThread)
 	}
 
 	// Set post handler
-	posts := app.Party("/post")
+	posts := app.Party("/post", corsPost).AllowMethods(iris.MethodOptions)
 	{
 		posts.Get("/", tollboothic.LimitHandler(regularLimiter), handler.GetPostExample)
 		posts.Get("/{id:uint64 min(1)}", tollboothic.LimitHandler(regularLimiter), handler.GetPost)
