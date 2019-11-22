@@ -30,8 +30,8 @@ func init() {
 	// Connect the client
 	client = redis.NewClient(&redis.Options{
 		Addr:       addr,
-		PoolSize:   1000,
-		MaxRetries: 2,
+		PoolSize:   100,
+		MaxRetries: 1,
 		Password:   password,
 		DB:         db,
 	})
