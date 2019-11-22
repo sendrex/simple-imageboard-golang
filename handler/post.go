@@ -88,8 +88,8 @@ func SavePost(ctx echo.Context) error {
 func DeletePost(ctx echo.Context) error {
 	data := new(model.DeleteData)
 
-	// Read JSON from body
-	if err := ctx.Bind(&data); err != nil {
+	// Read JSON from body and send error if there's some field missing
+	if err := ctx.Bind(&data); err != nil || data.ID == 0 || data.DeleteCode == "" {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
