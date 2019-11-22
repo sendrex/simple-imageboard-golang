@@ -7,7 +7,6 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/database"
 	"github.com/AquoDev/simple-imageboard-golang/model"
 	"github.com/AquoDev/simple-imageboard-golang/redis"
-	"github.com/AquoDev/simple-imageboard-golang/util"
 	"github.com/labstack/echo/v4"
 )
 
@@ -65,7 +64,7 @@ func SavePost(ctx echo.Context) error {
 
 	// Make delete code if it hasn't one
 	if post.DeleteCode == "" {
-		post.DeleteCode = util.RandomString(32)
+		post.GenerateDeleteCode()
 	}
 
 	// Try to save the post (or thread) and check if it has been saved
