@@ -12,7 +12,7 @@ func GetCORSpost() echo.MiddlewareFunc {
 	return middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPost, http.MethodDelete},
+		AllowMethods: []string{http.MethodOptions, http.MethodGet, http.MethodHead, http.MethodPost, http.MethodDelete},
 	})
 }
 
@@ -21,6 +21,6 @@ func GetCORSdefault() echo.MiddlewareFunc {
 	return middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-		AllowMethods: []string{http.MethodGet, http.MethodHead},
+		AllowMethods: []string{http.MethodOptions, http.MethodGet, http.MethodHead},
 	})
 }
