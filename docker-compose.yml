@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   redis:
-    image: redis:5.0.6-alpine3.10
+    image: redis:5.0.7-alpine3.10
     restart: always
     sysctls:
       net.core.somaxconn: 1024
@@ -31,7 +31,7 @@ services:
       - redis-data:/data
 
   database:
-    image: postgres:12.0-alpine
+    image: postgres:12.1-alpine
     restart: always
     container_name: pgsql-si-go
     hostname: database
