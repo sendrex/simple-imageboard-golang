@@ -17,16 +17,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    command:
-      [
-        "redis-server",
-        "--port",
-        "${REDIS_PORT}",
-        "--requirepass",
-        "${REDIS_PASSWORD}",
-        "--appendonly",
-        "yes",
-      ]
+    command: ["redis-server", "--port", "${REDIS_PORT}", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
     volumes:
       - redis-data:/data
 
@@ -40,17 +31,7 @@ services:
     #ports:
     #  - "${DB_PORT}:${DB_PORT}"
     healthcheck:
-      test:
-        [
-          "CMD",
-          "pg_isready",
-          "-p",
-          "${DB_PORT}",
-          "-U",
-          "${DB_USER}",
-          "-d",
-          "${DB_NAME}",
-        ]
+      test: ["CMD", "pg_isready", "-p", "${DB_PORT}", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
