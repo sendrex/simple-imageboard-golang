@@ -1,8 +1,9 @@
 package redis
 
 import (
-	"github.com/AquoDev/simple-imageboard-golang/model"
 	"time"
+
+	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
 // setCachedModel caches any generic struct or interface as a JSON string.
