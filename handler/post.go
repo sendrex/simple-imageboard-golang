@@ -30,17 +30,22 @@ func GetPost(ctx echo.Context) error {
 	// Get post from cache
 	if response, err := redis.GetCachedPost(id); err == nil {
 		// If it exists, return a response with it
-		return ctx.JSON(http.StatusOK, response)
+		if response.Status == http.StatusOK {
+			return ctx.JSON(response.Status, response.Data)
+		}
+		// If it's an error, return an error response
+		return echo.NewHTTPError(response.Status)
 	}
 
 	// If it couldn't be found in cache, get it from the database
 	if response, err := database.GetPost(id); err == nil {
 		// If it exists, set the cache and send the post
-		redis.SetCachedPost(id, response)
+		go redis.SetCachedPost(id, http.StatusOK, response)
 		return ctx.JSON(http.StatusOK, response)
 	}
 
 	// At last, send 404 Not Found if the post doesn't exist
+	go redis.SetCachedPost(id, http.StatusNotFound, nil)
 	return echo.NewHTTPError(http.StatusNotFound)
 }
 
@@ -71,13 +76,13 @@ func SavePost(ctx echo.Context) error {
 
 	if post.OnThread == nil {
 		// Delete old threads when the post starts a new thread
-		database.DeleteOldThreads()
+		go database.DeleteOldThreads()
 	} else {
 		// Bump thread if it hasn't reached bump limit
-		database.BumpThread(uint64(post.OnThread.ValueOrZero()), post.CreatedAt)
+		go database.BumpThread(uint64(post.OnThread.ValueOrZero()), post.CreatedAt)
 	}
 
-	return ctx.JSON(http.StatusOK, response)
+	return ctx.JSON(http.StatusCreated, response)
 }
 
 // DeletePost handles a JSON response with a post.
@@ -96,10 +101,10 @@ func DeletePost(ctx echo.Context) error {
 
 	// Try to delete post (and thread if the post has "on_thread == null")
 	if err := database.DeletePost(data.ID, data.DeleteCode); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest)
+		return echo.NewHTTPError(http.StatusUnauthorized)
 	}
 
-	return ctx.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success",
+	return ctx.JSON(http.StatusOK, map[string]string{
+		"message": http.StatusText(http.StatusOK),
 	})
 }

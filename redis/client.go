@@ -6,16 +6,12 @@ import (
 	"strconv"
 
 	"github.com/go-redis/redis/v7"
-	"github.com/joho/godotenv"
 )
 
 // Redis client connection.
 var client *redis.Client
 
 func init() {
-	// Read values from .env file
-	godotenv.Load()
-
 	// Get Redis host, port, password and database
 	host := os.Getenv("REDIS_HOST")
 	password := os.Getenv("REDIS_PASSWORD")
@@ -34,18 +30,17 @@ func init() {
 	// Connect the client
 	client = redis.NewClient(&redis.Options{
 		Addr:       addr,
-		PoolSize:   100,
+		PoolSize:   1000,
 		MaxRetries: 2,
 		Password:   password,
 		DB:         db,
 	})
 
 	// Check if it's connected
-	pong, err := client.Ping().Result()
-	if err != nil {
+	if err := client.Ping().Err(); err != nil {
 		panic(err)
 	}
 
 	// Show the result
-	fmt.Printf("[REDIS]: %s received\n", pong)
+	fmt.Println("[REDIS]: Redis client OK")
 }

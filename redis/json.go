@@ -2,11 +2,13 @@ package redis
 
 import (
 	"encoding/json"
+
+	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
 // unmarshalModel unmarshals any generic struct.
-func unmarshalModel(result string) (interface{}, error) {
-	model := new(interface{})
+func unmarshalModel(result string) (*model.Cache, error) {
+	model := new(model.Cache)
 	if err := json.Unmarshal([]byte(result), &model); err != nil {
 		return nil, err
 	}
@@ -14,6 +16,6 @@ func unmarshalModel(result string) (interface{}, error) {
 }
 
 // marshalModel marshals any generic struct or interface.
-func marshalModel(data interface{}) ([]byte, error) {
-	return json.Marshal(data)
+func marshalModel(cache *model.Cache) ([]byte, error) {
+	return json.Marshal(cache)
 }

@@ -28,16 +28,21 @@ func GetThread(ctx echo.Context) error {
 	// Get thread from cache
 	if response, err := redis.GetCachedThread(id); err == nil {
 		// If it exists, return a response with it
-		return ctx.JSON(http.StatusOK, response)
+		if response.Status == http.StatusOK {
+			return ctx.JSON(response.Status, response.Data)
+		}
+		// If it's an error, return an error response
+		return echo.NewHTTPError(response.Status)
 	}
 
 	// If it couldn't be found in cache, get it from the database
 	if response, err := database.GetThread(id); err == nil && len(response) > 0 {
 		// If the thread is not empty, set the cache and send the response
-		redis.SetCachedThread(id, response)
+		go redis.SetCachedThread(id, http.StatusOK, response)
 		return ctx.JSON(http.StatusOK, response)
 	}
 
 	// At last, send 404 Not Found if the thread doesn't exist
+	go redis.SetCachedThread(id, http.StatusNotFound, nil)
 	return echo.NewHTTPError(http.StatusNotFound)
 }

@@ -14,7 +14,7 @@ import (
 var db *gorm.DB
 
 func init() {
-	// Read values from .env file
+	// Load .env for the first time
 	godotenv.Load()
 
 	// Parse connection settings

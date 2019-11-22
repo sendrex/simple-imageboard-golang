@@ -1,13 +1,14 @@
 package redis
 
 import (
+	"github.com/AquoDev/simple-imageboard-golang/model"
 	"time"
 )
 
 // setCachedModel caches any generic struct or interface as a JSON string.
-func setCachedModel(key string, data interface{}, duration time.Duration) error {
+func setCachedModel(key string, cache *model.Cache, duration time.Duration) error {
 	// Marshal data into a JSON string
-	cachedData, err := marshalModel(data)
+	cachedData, err := marshalModel(cache)
 	if err != nil {
 		return err
 	}
@@ -16,19 +17,31 @@ func setCachedModel(key string, data interface{}, duration time.Duration) error 
 }
 
 // SetCachedPage sets a page or error in cache.
-func SetCachedPage(id uint64, data interface{}) error {
+func SetCachedPage(id uint64, status int, data interface{}) error {
 	key := getPageKey(id)
-	return setCachedModel(key, data, maxTimePage)
+	cache := &model.Cache{
+		Status: status,
+		Data:   data,
+	}
+	return setCachedModel(key, cache, maxTimePage)
 }
 
 // SetCachedThread sets a thread or error in cache.
-func SetCachedThread(id uint64, data interface{}) error {
+func SetCachedThread(id uint64, status int, data interface{}) error {
 	key := getThreadKey(id)
-	return setCachedModel(key, data, maxTimeThread)
+	cache := &model.Cache{
+		Status: status,
+		Data:   data,
+	}
+	return setCachedModel(key, cache, maxTimeThread)
 }
 
 // SetCachedPost sets a post or error in cache.
-func SetCachedPost(id uint64, data interface{}) error {
+func SetCachedPost(id uint64, status int, data interface{}) error {
 	key := getPostKey(id)
-	return setCachedModel(key, data, maxTimePost)
+	cache := &model.Cache{
+		Status: status,
+		Data:   data,
+	}
+	return setCachedModel(key, cache, maxTimePost)
 }

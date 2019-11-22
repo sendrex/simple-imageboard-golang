@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-
-	"github.com/joho/godotenv"
 )
 
 var (
@@ -13,9 +11,6 @@ var (
 )
 
 func init() {
-	// Read values from .env file
-	godotenv.Load()
-
 	// Parse board settings
 	if parseInt, err := strconv.ParseUint(os.Getenv("THREADS_PER_PAGE"), 10, 0); err != nil {
 		panic(err)

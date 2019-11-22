@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 var (
@@ -13,9 +11,6 @@ var (
 )
 
 func init() {
-	// Read values from .env file
-	godotenv.Load()
-
 	stringTimePage := fmt.Sprintf("%ss", os.Getenv("REDIS_EXPIRE_TIME_PAGE"))
 	stringTimeThread := fmt.Sprintf("%ss", os.Getenv("REDIS_EXPIRE_TIME_THREAD"))
 	stringTimePost := fmt.Sprintf("%ss", os.Getenv("REDIS_EXPIRE_TIME_POST"))

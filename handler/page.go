@@ -28,16 +28,21 @@ func GetPage(ctx echo.Context) error {
 	// Get page from cache
 	if response, err := redis.GetCachedPage(id); err == nil {
 		// If it exists, return a response with it
-		return ctx.JSON(http.StatusOK, response)
+		if response.Status == http.StatusOK {
+			return ctx.JSON(response.Status, response.Data)
+		}
+		// If it's an error, return an error response
+		return echo.NewHTTPError(response.Status)
 	}
 
 	// If it couldn't be found in cache, get it from the database
 	if response, err := database.GetPage(id); err == nil {
 		// Even if the page is empty, set the cache and send the response
-		redis.SetCachedPage(id, response)
+		go redis.SetCachedPage(id, http.StatusOK, response)
 		return ctx.JSON(http.StatusOK, response)
 	}
 
 	// At last, send 500 Internal Server error
+	go redis.SetCachedPage(id, http.StatusInternalServerError, nil)
 	return echo.NewHTTPError(http.StatusInternalServerError)
 }
