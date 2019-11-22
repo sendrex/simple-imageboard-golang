@@ -16,6 +16,9 @@ func main() {
 	// Make empty Echo instance
 	app := echo.New()
 
+	// Hide Echo banner
+	app.HideBanner = true
+
 	// Remove trailing slash from URLs
 	app.Pre(middleware.RemoveTrailingSlash())
 
