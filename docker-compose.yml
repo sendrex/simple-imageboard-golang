@@ -4,6 +4,7 @@ services:
   redis:
     image: redis:5.0.7-alpine3.10
     restart: always
+    privileged: false
     sysctls:
       net.core.somaxconn: 1024
     container_name: redis-si-go
@@ -22,6 +23,7 @@ services:
   database:
     image: postgres:12.1-alpine
     restart: always
+    privileged: false
     container_name: pgsql-si-go
     hostname: database
     networks:
@@ -42,6 +44,7 @@ services:
   app:
     build: "."
     restart: always
+    privileged: false
     container_name: api-si-go
     networks:
       - internal_network
