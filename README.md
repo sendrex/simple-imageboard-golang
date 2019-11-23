@@ -9,6 +9,33 @@
 ![Diagram](https://i.imgur.com/8YVWuRM.png)
 **Everything is a post.**
 
+# Table of contents
+
+-   [Prerequisites](#prerequisites)
+    -   [For container deployment](#for-container-deployment)
+    -   [For local deployment](#for-local-deployment)
+    -   [For both cases](#for-both-cases)
+-   [Container deployment](#container-deployment)
+    -   [First run: build containers and start containers in background](#first-run-build-containers-and-start-containers-in-background)
+    -   [Start containers in foreground](#start-containers-in-foreground)
+    -   [Start containers in background](#start-containers-in-background)
+    -   [Stop containers in background](#stop-containers-in-background)
+    -   [Stop and/or remove containers](#stop-andor-remove-containers)
+    -   [Delete all saved data and remove containers](#delete-all-saved-data-and-remove-containers)
+    -   [Rebuild containers from scratch](#rebuild-containers-from-scratch)
+-   [Local deployment](#local-deployment)
+    -   [Redis](#redis)
+        -   [Set the same password in .env and redis.conf](#set-the-same-password-in-env-and-redisconf)
+    -   [Database](#database)
+        -   [Create database and user](#create-database-and-user)
+        -   [Run migrations](#run-migrations)
+    -   [Server](#server)
+        -   [Option 1 (recommended): build and start server](#option-1-recommended-build-and-start-server)
+        -   [Option 2: start server without building it](#option-2-start-server-without-building-it)
+-   [Mixed deployment](#mixed-deployment)
+    -   [Only Redis and Postgres as containers](#only-redis-and-postgres-as-containers)
+-   [Tips](#tips)
+
 # Prerequisites
 
 ### For container deployment
