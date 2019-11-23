@@ -10,8 +10,6 @@ services:
     hostname: redis
     networks:
       - internal_network
-    #ports:
-    #  - "${REDIS_PORT}:${REDIS_PORT}"
     healthcheck:
       test: ["CMD", "redis-cli", "-p", "${REDIS_PORT}", "ping"]
       interval: 10s
@@ -28,8 +26,6 @@ services:
     hostname: database
     networks:
       - internal_network
-    #ports:
-    #  - "${DB_PORT}:${DB_PORT}"
     healthcheck:
       test: ["CMD", "pg_isready", "-p", "${DB_PORT}", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
       interval: 10s
@@ -58,7 +54,7 @@ services:
       - DB_HOST=database
       - REDIS_HOST=redis
     volumes:
-      - .:/go/src/github.com/AquoDev/simple-imageboard-golang
+      - .env:/simple-imageboard-golang/.env
 
 networks:
   internal_network:

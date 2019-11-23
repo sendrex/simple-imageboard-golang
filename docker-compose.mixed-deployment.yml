@@ -1,0 +1,10 @@
+version: "3.3"
+
+services:
+  redis:
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+
+  database:
+    ports:
+      - "${DB_PORT}:${DB_PORT}"

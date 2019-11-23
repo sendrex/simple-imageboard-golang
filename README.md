@@ -22,12 +22,6 @@
 -   Redis
 -   Golang (v1.13+)
 
-Run this command to install dependencies:
-
-```console
-go get -v ./...
-```
-
 ### For both cases
 
 You are required to run this command:
@@ -38,43 +32,43 @@ cp .env.example .env
 
 # Container deployment
 
-### First run: build containers and start containers in background
+#### First run: build containers and start containers in background
 
 ```console
 docker-compose up --build -d
 ```
 
-### Start containers in foreground
+#### Start containers in foreground
 
 ```console
 docker-compose up
 ```
 
-### Start containers in background
+#### Start containers in background
 
 ```console
 docker-compose up -d
 ```
 
-### Stop containers in background
+#### Stop containers in background
 
 ```console
 docker-compose stop
 ```
 
-### Stop and/or remove containers
+#### Stop and/or remove containers
 
 ```console
 docker-compose down
 ```
 
-### Delete all saved data and remove containers
+#### Delete all saved data and remove containers
 
 ```console
 docker-compose down -v
 ```
 
-### Rebuild containers from scratch
+#### Rebuild containers from scratch
 
 ```console
 docker-compose build --no-cache
@@ -119,16 +113,33 @@ sudo -u postgres psql
 
 ### Server
 
-#### Start server
+#### Option 1 (recommended): build and start server
+
+```console
+go build
+```
+
+```console
+./simple-imageboard-golang
+```
+
+#### Option 2: start server without building it
 
 ```console
 go run main.go
 ```
 
+# Mixed deployment
+
+### Only Redis and Postgres as containers
+
+```console
+docker-compose -f docker-compose.yml -f docker-compose.mixed-deployment.yml up -d redis database
+```
+
 # Tips
 
 -   First of all, **read `.env` and change the settings as you need**.
--   You are supposed to know what you are doing, right?
 -   Use `autocannon` for performance testing.
     1. **Install:** `npm install -g autocannon`
-    2. **Run:** `autocannon http://localhost:3000`
+    2. **Run:** `autocannon localhost:3000`
