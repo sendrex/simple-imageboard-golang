@@ -99,7 +99,7 @@ func DeletePost(ctx echo.Context) error {
 	}
 
 	// Try to delete post (and thread if the post has "on_thread == null")
-	if err := database.DeletePost(data.ID, data.DeleteCode); err != nil {
+	if err := database.DeletePost(data); err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized)
 	}
 

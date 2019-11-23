@@ -34,12 +34,12 @@ func SavePost(post *model.Post) (*model.DeleteData, error) {
 // DeletePost returns an error that should be checked in the handler.
 // Warning: if the post started a thread (on_thread == null), it will delete
 // every post in the thread (on_thread == id).
-func DeletePost(id uint64, code string) error {
+func DeletePost(data *model.DeleteData) error {
 	// Make empty post
 	post := new(model.Post)
 
 	// Query post and check if the post hasn't been found
-	if result := db.Where("id = ? AND delete_code = ?", id, code).First(&post); result.RecordNotFound() {
+	if result := db.Where("id = ? AND delete_code = ?", data.ID, data.DeleteCode).First(&post); result.RecordNotFound() {
 		// If it hasn't, return the error
 		return result.Error
 	}
