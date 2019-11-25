@@ -6,13 +6,13 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
-// GetThread returns a slice of posts (original post + on_thread == original post ID).
+// GetThread returns a slice of posts.
 func GetThread(id uint64) ([]model.Post, error) {
 	// Make empty thread
 	thread := make([]model.Post, 0)
 
-	// Query posts that belong to a thread
-	if err := db.Select("posts.id, posts.content, posts.pic, posts.created_at, posts.updated_at, count(b.on_thread) as replies").Joins("LEFT JOIN posts b ON b.on_thread = posts.id").Where("posts.id = ?", id).Or("posts.on_thread = ?", id).Group("posts.id").Order("posts.id asc").Find(&thread).Error; err != nil {
+	// Query posts that belong to a thread and count every post replies
+	if err := db.Select("posts.id, posts.content, posts.pic, posts.created_at, posts.updated_at, count(replies.on_thread) as replies").Joins("LEFT JOIN posts replies ON replies.on_thread = posts.id").Where("posts.id = ?", id).Or("posts.on_thread = ?", id).Group("posts.id").Order("posts.id asc").Find(&thread).Error; err != nil {
 		return nil, err
 	}
 

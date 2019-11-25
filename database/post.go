@@ -10,7 +10,7 @@ func GetPost(id uint64) (*model.Post, error) {
 	post := new(model.Post)
 
 	// Query post
-	if err := db.Select("posts.id, posts.content, posts.pic, posts.on_thread, posts.created_at, posts.updated_at, count(b.on_thread) as replies").Joins("LEFT JOIN posts b ON b.on_thread = posts.id").Where("posts.id = ?", id).Group("posts.id").First(&post).Error; err != nil {
+	if err := db.Select("posts.id, posts.content, posts.pic, posts.on_thread, posts.created_at, posts.updated_at, count(replies.on_thread) as replies").Joins("LEFT JOIN posts replies ON replies.on_thread = posts.id").Where("posts.id = ?", id).Group("posts.id").First(&post).Error; err != nil {
 		return nil, err
 	}
 
