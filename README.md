@@ -54,7 +54,7 @@
 ### Clone this repository
 
 ```console
-git clone https://github.com/AquoDev/
+git clone https://github.com/AquoDev/simple-imageboard-golang.git
 ```
 
 ### Copy `.env.example` to `.env`
