@@ -14,26 +14,26 @@
 -   [Prerequisites](#prerequisites)
     -   [For container deployment](#for-container-deployment)
     -   [For local deployment](#for-local-deployment)
-    -   [For both cases](#for-both-cases)
+-   [Installation](#installation)
+    -   [Clone this repository](#clone-this-repository)
+    -   [Copy `.env.example` to `.env`](#copy-envexample-to-env)
+    -   [Edit `.env` with your credentials](#edit-env-with-your-credentials)
 -   [Container deployment](#container-deployment)
     -   [First run: build containers and start containers in background](#first-run-build-containers-and-start-containers-in-background)
     -   [Start containers in foreground](#start-containers-in-foreground)
     -   [Start containers in background](#start-containers-in-background)
     -   [Stop containers in background](#stop-containers-in-background)
-    -   [Stop and/or remove containers](#stop-andor-remove-containers)
-    -   [Delete all saved data and remove containers](#delete-all-saved-data-and-remove-containers)
-    -   [Rebuild containers from scratch](#rebuild-containers-from-scratch)
+    -   [Rebuild containers from scratch wihout losing data](#rebuild-containers-from-scratch-without-losing-data)
+    -   [Remove containers without losing data](#remove-containers-without-losing-data)
+    -   [Delete all saved data (!) and remove containers](#delete-all-saved-data-!-and-remove-containers)
 -   [Local deployment](#local-deployment)
-    -   [Redis](#redis)
-        -   [Set the same password in .env and redis.conf](#set-the-same-password-in-env-and-redisconf)
-    -   [Database](#database)
-        -   [Create database and user](#create-database-and-user)
-        -   [Run migrations](#run-migrations)
-    -   [Server](#server)
-        -   [Option 1 (recommended): build and start server](#option-1-recommended-build-and-start-server)
-        -   [Option 2: start server without building it](#option-2-start-server-without-building-it)
+    -   [Redis: set and share password](#redis-set-and-share-password)
+    -   [Database: create database and user](#database-create-database-and-user)
+    -   [Server: build and start it](#server-build-and-start-it)
 -   [Mixed deployment](#mixed-deployment)
-    -   [Only Redis and Postgres as containers](#only-redis-and-postgres-as-containers)
+    -   [Only Redis as container](#only-redis-as-container)
+    -   [Only Postgres as container](#only-postgres-as-container)
+    -   [Redis and Postgres as containers](#redis-and-postgres-as-containers)
 -   [Tips](#tips)
 
 # Prerequisites
@@ -49,12 +49,24 @@
 -   Redis
 -   Golang (v1.13+)
 
-### For both cases
+# Installation
 
-You are required to run this command:
+### Clone this repository
+
+```console
+git clone https://github.com/AquoDev/
+```
+
+### Copy `.env.example` to `.env`
 
 ```console
 cp .env.example .env
+```
+
+### Edit `.env` with your credentials
+
+```console
+nano .env
 ```
 
 # Container deployment
@@ -83,29 +95,29 @@ docker-compose up -d
 docker-compose stop
 ```
 
-#### Stop and/or remove containers
-
-```console
-docker-compose down
-```
-
-#### Delete all saved data and remove containers
-
-```console
-docker-compose down -v
-```
-
-#### Rebuild containers from scratch
+#### Rebuild containers from scratch without losing data
 
 ```console
 docker-compose build --no-cache
 ```
 
+#### Remove containers without losing data
+
+```console
+docker-compose down
+```
+
+#### Delete all saved data (!) and remove containers
+
+```console
+docker-compose down -v
+```
+
 # Local deployment
 
-### Redis
+### Redis: set and share password
 
-#### Set the same password in `.env` and `redis.conf`
+The credentials must be shared between `.env` and `/etc/redis/redis.conf`.
 
 ```console
 nano .env
@@ -122,9 +134,9 @@ requirepass your_pass_here
 ... (Save)
 ```
 
-### Database
+### Database: create database and user
 
-#### Create database and user
+The credentials must be shared between `.env` and these commands.
 
 ```console
 sudo -u postgres psql
@@ -134,31 +146,35 @@ sudo -u postgres psql
 > \q
 ```
 
-#### Run migrations
+`Tables are automatically created after starting the server for the first time.`
 
-`Migrations are automatically run on first start.`
+### Server: build and start it
 
-### Server
-
-#### Option 1 (recommended): build and start server
+You can edit the listening port in `.env` and put a reverse proxy in front of this server.
 
 ```console
-go build
+go build -o server.bin
 ```
 
 ```console
-./simple-imageboard-golang
-```
-
-#### Option 2: start server without building it
-
-```console
-go run main.go
+./server.bin
 ```
 
 # Mixed deployment
 
-### Only Redis and Postgres as containers
+### Only Redis as container
+
+```console
+docker-compose -f docker-compose.yml -f docker-compose.mixed-deployment.yml up -d redis
+```
+
+### Only Postgres as container
+
+```console
+docker-compose -f docker-compose.yml -f docker-compose.mixed-deployment.yml up -d database
+```
+
+### Redis and Postgres as containers
 
 ```console
 docker-compose -f docker-compose.yml -f docker-compose.mixed-deployment.yml up -d redis database
