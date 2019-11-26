@@ -1,2 +1,8 @@
+# Hide credentials
 .env
+
+# Hide standard output from "go build"
 simple-imageboard-golang
+
+# Hide output from "go build -o server.bin"
+server.bin
