@@ -7,7 +7,7 @@ services:
     privileged: false
     sysctls:
       net.core.somaxconn: 1024
-    container_name: redis-si-go
+    container_name: redis-simple-imageboard
     hostname: redis
     networks:
       - internal_network
@@ -24,7 +24,7 @@ services:
     image: postgres:12.1-alpine
     restart: always
     privileged: false
-    container_name: pgsql-si-go
+    container_name: database-simple-imageboard
     hostname: database
     networks:
       - internal_network
@@ -41,11 +41,11 @@ services:
     volumes:
       - pgsql-data:/var/lib/postgresql/data
 
-  app:
+  server:
     build: "."
     restart: always
     privileged: false
-    container_name: api-si-go
+    container_name: server-simple-imageboard
     networks:
       - internal_network
     ports:
@@ -54,10 +54,10 @@ services:
       - redis
       - database
     environment:
-      - DB_HOST=database
       - REDIS_HOST=redis
+      - DB_HOST=database
     volumes:
-      - .env:/simple-imageboard-golang/.env
+      - .env:/app/.env
 
 networks:
   internal_network:
