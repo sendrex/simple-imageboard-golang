@@ -25,7 +25,7 @@
     -   [Stop containers in background](#stop-containers-in-background)
     -   [Rebuild containers from scratch wihout losing data](#rebuild-containers-from-scratch-without-losing-data)
     -   [Remove containers without losing data](#remove-containers-without-losing-data)
-    -   [Delete all saved data (!) and remove containers](#delete-all-saved-data-!-and-remove-containers)
+    -   [Delete all saved data and remove containers](#delete-all-saved-data-and-remove-containers)
 -   [Local deployment](#local-deployment)
     -   [Redis: set and share password](#redis-set-and-share-password)
     -   [Database: create database and user](#database-create-database-and-user)
@@ -107,7 +107,7 @@ docker-compose build --no-cache
 docker-compose down
 ```
 
-#### Delete all saved data (!) and remove containers
+#### Delete all saved data and remove containers
 
 ```console
 docker-compose down -v
