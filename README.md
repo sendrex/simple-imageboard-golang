@@ -40,13 +40,13 @@
 
 ### For container deployment
 
--   Docker
--   Docker Compose
+-   Docker (v19.03+)
+-   Docker Compose (v1.25+)
 
 ### For local deployment
 
--   PostgreSQL
--   Redis
+-   PostgreSQL (v12+)
+-   Redis (v5.0+)
 -   Golang (v1.13+)
 
 # Installation
