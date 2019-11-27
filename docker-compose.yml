@@ -6,7 +6,7 @@ services:
     restart: always
     privileged: false
     sysctls:
-      net.core.somaxconn: 1024
+      net.core.somaxconn: 511
     container_name: redis-simple-imageboard
     hostname: redis
     networks:
@@ -61,7 +61,6 @@ services:
 
 networks:
   internal_network:
-    driver: bridge
 
 volumes:
   pgsql-data:
