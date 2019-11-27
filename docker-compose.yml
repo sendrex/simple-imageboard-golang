@@ -6,7 +6,7 @@ services:
     restart: always
     privileged: false
     sysctls:
-      net.core.somaxconn: 511
+      net.core.somaxconn: 1024
     container_name: redis-simple-imageboard
     hostname: redis
     networks:
