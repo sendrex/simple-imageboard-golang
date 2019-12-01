@@ -57,17 +57,7 @@ func SavePost(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
-	// Check if post is not valid
-	if err := post.Check(); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest)
-	}
-
-	// Make delete code if it hasn't one
-	if post.DeleteCode == "" {
-		post.GenerateDeleteCode()
-	}
-
-	// Try to save the post (or thread) and check if it has been saved
+	// Try to save the post and check if it has been saved
 	response, err := database.SavePost(post)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)

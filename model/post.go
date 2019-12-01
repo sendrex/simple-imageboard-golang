@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"github.com/asaskevich/govalidator"
 	"gopkg.in/guregu/null.v3"
 )
@@ -21,8 +22,13 @@ type Post struct {
 	Replies    uint64       `json:"replies,omitempty"` // omitempty: "replies" is NOT shown if == 0
 }
 
-// Check returns an error if this post isn't valid, and nil otherwise.
-func (post *Post) Check() error {
+// TableName sets the table name for the model Post.
+func (post *Post) TableName() string {
+	return "posts"
+}
+
+// BeforeCreate returns an error if this post isn't valid, and nil otherwise.
+func (post *Post) BeforeCreate(scope *gorm.Scope) error {
 	// Check if content has at least one character
 	if len(post.Content) == 0 {
 		return errors.New("content must have at least 1 character")
@@ -53,15 +59,15 @@ func (post *Post) Check() error {
 		return errors.New("pic is a invalid url")
 	}
 
+	// Make delete code if it hasn't one
+	if post.DeleteCode == "" {
+		post.DeleteCode = randomString(32)
+	}
+
 	return nil
 }
 
-// GenerateDeleteCode generates a random delete code for this post.
-func (post *Post) GenerateDeleteCode() {
-	post.DeleteCode = randomString(32)
-}
-
-// randomString makes a random string from predefined characters.
+// randomString returns a random string from predefined characters.
 func randomString(length int) string {
 	var letter = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
