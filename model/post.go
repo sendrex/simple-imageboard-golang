@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	"github.com/asaskevich/govalidator"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/guregu/null.v3"
 )
 
