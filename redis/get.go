@@ -6,13 +6,13 @@ import (
 
 // getCachedModel returns a generic cached model.
 func getCachedModel(key string) (*model.Cache, error) {
-	// Get cached result
+	// Get cached JSON
 	result, err := client.Get(key).Result()
 	if err != nil {
 		return nil, err
 	}
-	// Parse and return cached result
-	return unmarshalModel(result)
+	// Parse JSON and return cached model
+	return unmarshalCache(result)
 }
 
 // GetCachedPage returns a cached page or error.

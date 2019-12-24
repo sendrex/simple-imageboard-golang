@@ -6,8 +6,8 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
-// unmarshalModel unmarshals any generic struct.
-func unmarshalModel(result string) (*model.Cache, error) {
+// unmarshalCache turns any JSON into a Cache struct.
+func unmarshalCache(result string) (*model.Cache, error) {
 	model := new(model.Cache)
 	if err := json.Unmarshal([]byte(result), &model); err != nil {
 		return nil, err
@@ -15,7 +15,7 @@ func unmarshalModel(result string) (*model.Cache, error) {
 	return model, nil
 }
 
-// marshalModel marshals any generic struct or interface.
-func marshalModel(cache *model.Cache) ([]byte, error) {
+// marshalCache turns any Cache struct into JSON.
+func marshalCache(cache *model.Cache) ([]byte, error) {
 	return json.Marshal(cache)
 }
