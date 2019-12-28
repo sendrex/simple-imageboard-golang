@@ -1,6 +1,8 @@
 package redis
 
 import (
+	"encoding/json"
+
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
@@ -11,8 +13,13 @@ func getCachedModel(key string) (*model.Cache, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Parse JSON and return cached model
-	return unmarshalCache(result)
+	// Parse JSON
+	cache := new(model.Cache)
+	if err := json.Unmarshal([]byte(result), &cache); err != nil {
+		return nil, err
+	}
+	// Return cached data
+	return cache, nil
 }
 
 // GetCachedPage returns a cached page or error.

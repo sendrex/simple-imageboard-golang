@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/AquoDev/simple-imageboard-golang/model"
@@ -8,15 +9,15 @@ import (
 
 // setCachedModel caches any generic struct or interface as a JSON string.
 func setCachedModel(key string, status int, data interface{}, duration time.Duration) error {
-	// Marshal status and data into a JSON string
-	cache, err := marshalCache(&model.Cache{
+	// Marshal status and data into JSON
+	cache, err := json.Marshal(&model.Cache{
 		Status: status,
 		Data:   data,
 	})
 	if err != nil {
 		return err
 	}
-	// Set JSON string in cache
+	// Set JSON in cache
 	return client.Set(key, string(cache), duration).Err()
 }
 
