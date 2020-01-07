@@ -12,7 +12,9 @@ var boardSettings map[string]map[string]uint64
 
 // GetHealthcheck handles a JSON response with a 200 OK if everything's alright.
 func GetHealthcheck(ctx echo.Context) error {
-	return ctx.JSON(http.StatusOK, http.StatusText(http.StatusOK))
+	return ctx.JSON(http.StatusOK, map[string]string{
+		"message": http.StatusText(http.StatusOK),
+	})
 }
 
 // GetBoardSettings handles a JSON response with this board settings.
@@ -25,6 +27,7 @@ func init() {
 		threadsPerPage, postsPerThread                uint64
 		cacheTimePage, cacheTimeThread, cacheTimePost uint64
 	)
+
 	// Parse board settings
 	if parseInt, err := strconv.ParseUint(os.Getenv("THREADS_PER_PAGE"), 10, 0); err != nil {
 		panic(err)
@@ -57,6 +60,8 @@ func init() {
 		cacheTimePost = parseInt
 	}
 
+	// Fill board settings
+	boardSettings = make(map[string]map[string]uint64)
 	boardSettings["server"] = map[string]uint64{
 		"THREADS_PER_PAGE": threadsPerPage,
 		"POSTS_PER_THREAD": postsPerThread,
