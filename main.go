@@ -34,6 +34,10 @@ func main() {
 	// Set all static content routing
 	app.Static("/", "./static")
 
+	// Set healthcheck and server settings routing
+	app.GET("/health", handler.GetHealthcheck)
+	app.GET("/settings", handler.GetBoardSettings)
+
 	// Set page routing
 	pages := app.Group("/page")
 	pages.GET("", handler.GetPageExample)
