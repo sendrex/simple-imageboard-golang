@@ -1,3 +1,19 @@
+# Fourth version: update 1
+
+### Added
+
+-   `CHANGELOG.md`
+-   `/health` and `/settings` endpoints.
+
+### Removed
+
+-   `static/info.txt` (replaced by `/settings`).
+
+### Refactored
+
+-   `model.Post` validation.
+-   `redis/json.go` functions into `redis.setCachedModel` and `redis.getCachedModel`.
+
 # Fourth version
 
 ### Updated
