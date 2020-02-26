@@ -47,7 +47,7 @@
 
 -   PostgreSQL (v12+)
 -   Redis (v5.0+)
--   Golang (v1.13+)
+-   Golang (v1.14+)
 
 # Installation
 

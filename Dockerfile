@@ -1,5 +1,5 @@
 # Start from Golang v1.13 base image
-FROM golang:1.13.4-alpine3.10
+FROM golang:1.14.0-alpine3.11
 
 # Download Git
 RUN apk update && apk add --no-cache git
