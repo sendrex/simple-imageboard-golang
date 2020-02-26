@@ -33,6 +33,4 @@ func init() {
 	} else {
 		maxTimePost = parsedTime
 	}
-
-	fmt.Println("[REDIS]: Expiration times OK")
 }

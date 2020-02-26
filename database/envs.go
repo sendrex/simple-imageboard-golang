@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 )
@@ -25,6 +24,4 @@ func init() {
 	}
 
 	maxRootThreads = threadsPerPage * 10
-
-	fmt.Println("[DATABASE]: Board settings OK")
 }
