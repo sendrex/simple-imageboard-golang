@@ -23,7 +23,7 @@
     -   [Start containers in foreground](#start-containers-in-foreground)
     -   [Start containers in background](#start-containers-in-background)
     -   [Stop containers in background](#stop-containers-in-background)
-    -   [Rebuild containers from scratch wihout losing data](#rebuild-containers-from-scratch-without-losing-data)
+    -   [Update containers without losing data](#update-containers-without-losing-data)
     -   [Remove containers without losing data](#remove-containers-without-losing-data)
     -   [Delete all saved data and remove containers](#delete-all-saved-data-and-remove-containers)
 -   [Local deployment](#local-deployment)
@@ -95,7 +95,7 @@ docker-compose up -d
 docker-compose stop
 ```
 
-#### Rebuild containers from scratch without losing data
+#### Update containers without losing data
 
 ```console
 docker-compose build --no-cache
