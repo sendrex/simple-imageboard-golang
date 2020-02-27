@@ -1,4 +1,4 @@
-# Start from Golang v1.13 base image
+# Start from Golang v1.14 base image
 FROM golang:1.14.0-alpine3.11
 
 # Download Git
