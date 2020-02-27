@@ -1,3 +1,17 @@
+# Fourth version: update 2
+
+### Added
+
+-   `server-simple-imageboard` container now checkouts to the latest released version.
+
+### Updated
+
+-   Versions (Alpine, Postgres, `go.*` files).
+
+### Removed
+
+-   `envs.go` files.
+
 # Fourth version: update 1
 
 ### Added
