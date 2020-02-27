@@ -9,13 +9,15 @@ import (
 func init() {
 	// Make migration
 	if err := db.AutoMigrate(&model.Post{}).Error; err != nil {
-		panic(err)
+		message := fmt.Errorf("[DATABASE] Migrations FAILED @ %w", err)
+		panic(message)
 	}
 
 	// "on_thread" should be foreign key
 	if err := db.Model(&model.Post{}).AddForeignKey("on_thread", "posts(id)", "CASCADE", "RESTRICT").Error; err != nil {
-		panic(err)
+		message := fmt.Errorf("[DATABASE] Migrations FAILED @ %w", err)
+		panic(message)
 	}
 
-	fmt.Println("[DATABASE]: Migrations OK")
+	fmt.Println("[DATABASE] Migrations OK")
 }

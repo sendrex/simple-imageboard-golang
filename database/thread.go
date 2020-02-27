@@ -1,10 +1,15 @@
 package database
 
 import (
+	"fmt"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
+
+var postsPerThread uint64
 
 // GetThread returns a slice of posts.
 func GetThread(id uint64) ([]model.Post, error) {
@@ -25,7 +30,7 @@ func DeleteOldThreads() error {
 	threadIDs := make([]uint64, 0)
 
 	// Query ID from old threads and save them in the slice and check if there aren't IDs found
-	if result := db.Model(&model.Post{}).Offset(maxRootThreads).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs); len(threadIDs) == 0 {
+	if result := db.Model(&model.Post{}).Offset(threadsPerPage*10).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs); len(threadIDs) == 0 {
 		// If there's none, return the error
 		return result.Error
 	}
@@ -50,4 +55,13 @@ func BumpThread(id uint64, updatedAt *time.Time) error {
 	}
 
 	return nil
+}
+
+func init() {
+	if parseUint, err := strconv.ParseUint(os.Getenv("POSTS_PER_THREAD"), 10, 0); err != nil {
+		message := fmt.Errorf("[DATABASE] Couldn't parse POSTS_PER_THREAD @ %w", err)
+		panic(message)
+	} else {
+		postsPerThread = parseUint
+	}
 }

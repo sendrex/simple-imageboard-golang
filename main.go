@@ -62,10 +62,9 @@ func main() {
 
 func init() {
 	if parsed, err := strconv.ParseUint(os.Getenv("PORT"), 10, 0); err != nil {
-		panic(err)
+		message := fmt.Errorf("[SERVER] Couldn't parse PORT @ %w", err)
+		panic(message)
 	} else {
 		port = parsed
 	}
-
-	fmt.Println("[SERVER]: Port OK")
 }

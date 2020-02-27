@@ -15,7 +15,12 @@ var db *gorm.DB
 
 func init() {
 	// Load .env for the first time
-	godotenv.Load()
+	if err := godotenv.Load(); err != nil {
+		message := fmt.Errorf("[ENV FILE] Read FAILED @ %w", err)
+		panic(message)
+	} else {
+		fmt.Println("[ENV FILE] Read OK")
+	}
 
 	// Parse connection settings
 	settings := fmt.Sprintf(
@@ -31,9 +36,10 @@ func init() {
 	// Connect the client
 	conn, err := gorm.Open("postgres", settings)
 	if err != nil {
-		panic(err)
+		message := fmt.Errorf("[DATABASE] Client connection FAILED @ %w", err)
+		panic(message)
 	} else {
 		db = conn
-		fmt.Println("[DATABASE]: Postgres client OK")
+		fmt.Println("[DATABASE] Client connection OK")
 	}
 }

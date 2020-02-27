@@ -17,11 +17,13 @@ func init() {
 	password := os.Getenv("REDIS_PASSWORD")
 	port, err := strconv.Atoi(os.Getenv("REDIS_PORT"))
 	if err != nil {
-		panic(err)
+		message := fmt.Errorf("[REDIS] Couldn't parse REDIS_PORT @ %w", err)
+		panic(message)
 	}
 	db, err := strconv.Atoi(os.Getenv("REDIS_DATABASE"))
 	if err != nil {
-		panic(err)
+		message := fmt.Errorf("[REDIS] Couldn't parse REDIS_DATABASE @ %w", err)
+		panic(message)
 	}
 
 	// Parse host and port into accepted address
@@ -38,9 +40,10 @@ func init() {
 
 	// Check if it's connected
 	if err := client.Ping().Err(); err != nil {
-		panic(err)
+		message := fmt.Errorf("[REDIS] Client connection FAILED @ %w", err)
+		panic(message)
 	}
 
 	// Show the result
-	fmt.Println("[REDIS]: Redis client OK")
+	fmt.Println("   [REDIS] Client connection OK")
 }
