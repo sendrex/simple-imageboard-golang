@@ -1,6 +1,6 @@
 module github.com/AquoDev/simple-imageboard-golang
 
-go 1.14
+go 1.13
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496
