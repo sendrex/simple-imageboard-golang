@@ -57,18 +57,31 @@ func SavePost(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
+	// Get parent post
+	if parent, err := database.GetPost(uint64(post.ReplyTo.ValueOrZero())); err != nil {
+		// If parent post exists and...
+		if parent.ParentPost != nil {
+			// ...this post replies to a reply post, assign the reply post's parent ID to this parent ID
+			post.ParentPost = parent.ParentPost
+		} else {
+			// ...this post replies to OP, assign OP ("reply_to") ID to this parent ID
+			post.ParentPost = post.ReplyTo
+		}
+		// If it doesn't exist it starts a thread, so "parent_post" and "reply_to" must be nil
+	}
+
 	// Try to save the post and check if it has been saved
 	response, err := database.SavePost(post)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
-	if post.OnThread == nil {
+	if post.ReplyTo == nil {
 		// Delete old threads when the post starts a new thread
 		go database.DeleteOldThreads()
 	} else {
 		// Bump thread if it hasn't reached bump limit
-		go database.BumpThread(uint64(post.OnThread.ValueOrZero()), post.CreatedAt)
+		go database.BumpThread(uint64(post.ParentPost.ValueOrZero()), post.CreatedAt)
 	}
 
 	return ctx.JSON(http.StatusCreated, response)

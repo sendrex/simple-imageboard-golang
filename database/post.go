@@ -10,7 +10,7 @@ func GetPost(id uint64) (*model.Post, error) {
 	post := new(model.Post)
 
 	// Query post
-	if err := db.Select("posts.id, posts.content, posts.pic, posts.on_thread, posts.created_at, posts.updated_at, count(replies.on_thread) as replies").Joins("LEFT JOIN posts replies ON replies.on_thread = posts.id").Where("posts.id = ?", id).Group("posts.id").First(&post).Error; err != nil {
+	if err := db.Select("id, content, pic, parent_post, reply_to, created_at, updated_at").Where("id = ?", id).First(&post).Error; err != nil {
 		return nil, err
 	}
 
@@ -24,7 +24,7 @@ func SavePost(post *model.Post) (*model.DeleteData, error) {
 		return nil, err
 	}
 
-	// If it's inserted, parse data and return it
+	// If it's inserted, return delete data
 	return &model.DeleteData{
 		ID:         post.ID,
 		DeleteCode: post.DeleteCode,

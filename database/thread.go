@@ -17,7 +17,7 @@ func GetThread(id uint64) ([]model.Post, error) {
 	thread := make([]model.Post, 0)
 
 	// Query posts that belong to a thread and count every post replies
-	if err := db.Select("posts.id, posts.content, posts.pic, posts.created_at, posts.updated_at, count(replies.on_thread) as replies").Joins("LEFT JOIN posts replies ON replies.on_thread = posts.id").Where("posts.id = ?", id).Or("posts.on_thread = ?", id).Group("posts.id").Order("posts.id asc").Find(&thread).Error; err != nil {
+	if err := db.Select("id, content, pic, reply_to, created_at, updated_at").Where("id = ?", id).Or("parent_post = ?", id).Order("id asc").Find(&thread).Error; err != nil {
 		return nil, err
 	}
 
@@ -30,7 +30,7 @@ func DeleteOldThreads() error {
 	threadIDs := make([]uint64, 0)
 
 	// Query ID from old threads and save them in the slice and check if there aren't IDs found
-	if result := db.Model(&model.Post{}).Offset(threadsPerPage*10).Where("on_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs); len(threadIDs) == 0 {
+	if result := db.Model(&model.Post{}).Offset(threadsPerPage*10).Where("parent_post IS NULL").Order("updated_at desc").Pluck("id", &threadIDs); len(threadIDs) == 0 {
 		// If there's none, return the error
 		return result.Error
 	}
@@ -45,7 +45,7 @@ func BumpThread(id uint64, updatedAt *time.Time) error {
 	var threadLength uint64
 
 	// Query posts that belong to a thread
-	if err := db.Model(&model.Post{}).Where("id = ?", id).Or("on_thread = ?", id).Order("id asc").Count(&threadLength).Error; err != nil {
+	if err := db.Model(&model.Post{}).Where("id = ?", id).Or("parent_post = ?", id).Order("id asc").Count(&threadLength).Error; err != nil {
 		return err
 	}
 
