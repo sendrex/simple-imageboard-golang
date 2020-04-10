@@ -103,7 +103,7 @@ func DeletePost(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound)
 	}
 
-	// Try to delete post (and thread if the post has "on_thread == null")
+	// Try to delete post (and thread if the post has "parent_thread == nil")
 	if err := database.DeletePost(data); err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized)
 	}

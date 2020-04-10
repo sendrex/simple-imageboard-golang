@@ -32,8 +32,8 @@ func SavePost(post *model.Post) (*model.DeleteData, error) {
 }
 
 // DeletePost returns an error that should be checked in the handler.
-// Warning: if the post started a thread (on_thread == null), it will delete
-// every post in the thread (on_thread == id).
+// Warning: if the post started a thread (parent_thread == nil), it will delete
+// every post in the thread (parent_thread == id).
 func DeletePost(data *model.DeleteData) error {
 	// Make empty post
 	post := new(model.Post)
