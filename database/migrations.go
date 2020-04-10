@@ -20,7 +20,7 @@ func init() {
 	}
 
 	// "reply_to" should be foreign key
-	if err := db.Model(&model.Post{}).AddForeignKey("reply_to", "posts(id)", "RESTRICT", "RESTRICT").Error; err != nil {
+	if err := db.Model(&model.Post{}).AddForeignKey("reply_to", "posts(id)", "SET NULL", "RESTRICT").Error; err != nil {
 		message := fmt.Errorf("[DATABASE] Migrations FAILED @ %w", err)
 		panic(message)
 	}
