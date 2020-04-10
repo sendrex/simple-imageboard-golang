@@ -17,7 +17,7 @@ func GetThread(id uint64) ([]model.Post, error) {
 	thread := make([]model.Post, 0)
 
 	// Query posts that belong to a thread
-	if err := db.Select("id, content, pic, reply_to, created_at, updated_at").Where("id = ?", id).Or("parent_thread = ?", id).Or("reply_to = ?", id).Order("id asc").Find(&thread).Error; err != nil {
+	if err := db.Select("id, content, pic, reply_to, created_at").Where("id = ?", id).Or("parent_thread = ?", id).Or("reply_to = ?", id).Order("id asc").Find(&thread).Error; err != nil {
 		return nil, err
 	}
 
