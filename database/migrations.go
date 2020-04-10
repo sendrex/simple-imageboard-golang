@@ -13,8 +13,8 @@ func init() {
 		panic(message)
 	}
 
-	// "parent_post" should be foreign key
-	if err := db.Model(&model.Post{}).AddForeignKey("parent_post", "posts(id)", "CASCADE", "RESTRICT").Error; err != nil {
+	// "parent_thread" should be foreign key
+	if err := db.Model(&model.Post{}).AddForeignKey("parent_thread", "posts(id)", "CASCADE", "RESTRICT").Error; err != nil {
 		message := fmt.Errorf("[DATABASE] Migrations FAILED @ %w", err)
 		panic(message)
 	}
@@ -24,6 +24,4 @@ func init() {
 		message := fmt.Errorf("[DATABASE] Migrations FAILED @ %w", err)
 		panic(message)
 	}
-
-	fmt.Println("[DATABASE] Migrations OK")
 }

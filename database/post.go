@@ -10,7 +10,7 @@ func GetPost(id uint64) (*model.Post, error) {
 	post := new(model.Post)
 
 	// Query post
-	if err := db.Select("id, content, pic, parent_post, reply_to, created_at, updated_at").Where("id = ?", id).First(&post).Error; err != nil {
+	if err := db.Select("id, content, pic, parent_thread, reply_to, created_at, updated_at").Where("id = ?", id).First(&post).Error; err != nil {
 		return nil, err
 	}
 

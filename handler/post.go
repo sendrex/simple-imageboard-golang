@@ -57,17 +57,18 @@ func SavePost(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
-	// Get parent post
-	if parent, err := database.GetPost(uint64(post.ReplyTo.ValueOrZero())); err != nil {
-		// If parent post exists and...
-		if parent.ParentPost != nil {
-			// ...this post replies to a reply post, assign the reply post's parent ID to this parent ID
-			post.ParentPost = parent.ParentPost
-		} else {
-			// ...this post replies to OP, assign OP ("reply_to") ID to this parent ID
-			post.ParentPost = post.ReplyTo
+	// Get parent post if this post doesn't start a thread
+	if post.ReplyTo != nil {
+		if reply, err := database.GetPost(*post.ReplyTo); err == nil {
+			// If parent post exists and...
+			if reply.ParentThread != nil {
+				// ...this post replies to a reply post, assign the reply post's parent ID to this parent ID
+				post.ParentThread = reply.ParentThread
+			} else {
+				// ...this post replies to OP, assign OP ("reply_to") ID to this parent ID
+				post.ParentThread = post.ReplyTo
+			}
 		}
-		// If it doesn't exist it starts a thread, so "parent_post" and "reply_to" must be nil
 	}
 
 	// Try to save the post and check if it has been saved
@@ -76,12 +77,13 @@ func SavePost(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
-	if post.ReplyTo == nil {
-		// Delete old threads when the post starts a new thread
-		go database.DeleteOldThreads()
-	} else {
+	// Check if this post is a reply that belongs to a thread
+	if post.ParentThread != nil {
 		// Bump thread if it hasn't reached bump limit
-		go database.BumpThread(uint64(post.ParentPost.ValueOrZero()), post.CreatedAt)
+		go database.BumpThread(*post.ParentThread, post.CreatedAt)
+	} else {
+		// Delete old threads when this post starts a new thread
+		go database.DeleteOldThreads()
 	}
 
 	return ctx.JSON(http.StatusCreated, response)
