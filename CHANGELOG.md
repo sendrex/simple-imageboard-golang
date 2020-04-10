@@ -1,3 +1,22 @@
+# Fifth version
+
+### Added
+
+-   `reply_to` field.
+
+### Updated
+
+-   Quick guide (`static/index.html`).
+-   `go.mod` and `go.sum`
+
+### Removed
+
+-   `null.v3` dependency.
+
+### Refactored
+
+-   `on_thread` field (it was renamed to `parent_thread`). This refactor with the addition of `reply_to` let us get a parent thread with all its children replies inside.
+
 # Fourth version: update 2
 
 ### Added
