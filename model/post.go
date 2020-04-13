@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"math/rand"
+	"os"
 	"time"
 
 	"github.com/asaskevich/govalidator"
@@ -23,6 +24,10 @@ type Post struct {
 
 // TableName sets the table name for the model Post.
 func (post *Post) TableName() string {
+	if tableName := os.Getenv("DB_TABLE_NAME"); tableName != "" {
+		return tableName
+	}
+	// Don't break compatibility
 	return "posts"
 }
 

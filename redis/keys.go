@@ -2,11 +2,13 @@ package redis
 
 import (
 	"fmt"
+
+	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
 // makeKey returns a string built with both arguments.
 func makeKey(prefix string, number uint64) string {
-	return fmt.Sprintf("%s:%d", prefix, number)
+	return fmt.Sprintf("%s:%s:%d", (&model.Post{}).TableName(), prefix, number)
 }
 
 // getPageKey returns a string that corresponds to a 'page' key in Redis.
