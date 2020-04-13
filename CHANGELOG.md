@@ -1,3 +1,13 @@
+# Fifth version: update 1
+
+### Added
+
+-   Ability to change table's default name. This means that you can make multiple boards with different topics sharing the same Redis and Postgres database.
+
+### Updated
+
+-   Improved comments in `handler/{post,thread,page}.go`.
+
 # Fifth version
 
 ### Added
