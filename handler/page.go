@@ -19,30 +19,36 @@ func GetPageExample(ctx echo.Context) error {
 
 // GetPage handles a JSON response with a number of posts defined beforehand.
 func GetPage(ctx echo.Context) error {
-	// Parse page ID
+	// Parse page number. Is the parsing invalid?
+	// ── Yes:	return a failed JSON response.
+	// ── No:	continue. Page number was parsed successfully.
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 0)
 	if err != nil || id > 9 {
 		return echo.NewHTTPError(http.StatusNotFound)
 	}
 
-	// Get page from cache
+	// Try to get the page from cache. Is it stored in cache?
+	// ── Yes:	check if what's cached is an error or a page. Both options lead to a response.
+	// ── No:	continue.
 	if response, err := redis.GetCachedPage(id); err == nil {
-		// If it exists, return a response with it
+		// Is the page cached?
+		// ── Yes:	return the cached page.
+		// ── No:	it's an error, so return that error as a failed JSON response.
 		if response.Status == http.StatusOK {
 			return ctx.JSON(response.Status, response.Data)
 		}
-		// If it's an error, return an error response
 		return echo.NewHTTPError(response.Status)
 	}
 
-	// If it couldn't be found in cache, get it from the database
+	// Try to get the parent threads from the database, even if the slice we get is empty. Did it go correctly?
+	// ── Yes:	cache the page and return it, even if it's empty.
+	// ── No:	continue. There must be a server-side error. This means something has gone seriously wrong.
 	if response, err := database.GetPage(id); err == nil {
-		// Even if the page is empty, set the cache and send the response
 		go redis.SetCachedPage(id, http.StatusOK, response)
 		return ctx.JSON(http.StatusOK, response)
 	}
 
-	// At last, send 500 Internal Server error
+	// Return a 500 InternalServerError JSON response after caching it.
 	go redis.SetCachedPage(id, http.StatusInternalServerError, nil)
 	return echo.NewHTTPError(http.StatusInternalServerError)
 }

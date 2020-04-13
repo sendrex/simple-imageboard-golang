@@ -19,30 +19,36 @@ func GetThreadExample(ctx echo.Context) error {
 
 // GetThread handles a JSON response with a number of posts defined beforehand.
 func GetThread(ctx echo.Context) error {
-	// Parse thread ID
+	// Parse thread ID. Is the parsing invalid?
+	// ── Yes:	return a failed JSON response.
+	// ── No:	continue. ID was parsed successfully.
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 0)
 	if err != nil || id == 0 {
 		return echo.NewHTTPError(http.StatusNotFound)
 	}
 
-	// Get thread from cache
+	// Try to get the thread from cache. Is it stored in cache?
+	// ── Yes:	check if what's cached is an error or a thread. Both options lead to a response.
+	// ── No:	continue. It's not in cache, but posts could be stored in the database.
 	if response, err := redis.GetCachedThread(id); err == nil {
-		// If it exists, return a response with it
+		// Is the thread cached?
+		// ── Yes:	return the cached thread.
+		// ── No:	it's an error, so return that error as a failed JSON response.
 		if response.Status == http.StatusOK {
 			return ctx.JSON(response.Status, response.Data)
 		}
-		// If it's an error, return an error response
 		return echo.NewHTTPError(response.Status)
 	}
 
-	// If it couldn't be found in cache, get it from the database
+	// Try to get the posts from the database. Isn't the thread empty?
+	// ── Yes:	cache the thread and return it.
+	// ── No:	continue. The thread doesn't exist (if it's empty, it doesn't have the OP).
 	if response, err := database.GetThread(id); err == nil && len(response) > 0 {
-		// If the thread is not empty, set the cache and send the response
 		go redis.SetCachedThread(id, http.StatusOK, response)
 		return ctx.JSON(http.StatusOK, response)
 	}
 
-	// At last, send 404 Not Found if the thread doesn't exist
+	// Return a 404 NotFound JSON response after caching it.
 	go redis.SetCachedThread(id, http.StatusNotFound, nil)
 	return echo.NewHTTPError(http.StatusNotFound)
 }
