@@ -3,12 +3,14 @@ package model
 import (
 	"errors"
 	"math/rand"
-	"os"
 	"time"
 
+	"github.com/AquoDev/simple-imageboard-golang/env"
 	"github.com/asaskevich/govalidator"
 	"github.com/jinzhu/gorm"
 )
+
+var tableName = getTableNameOrDefault("posts")
 
 // Post defines the table in which the posts will be saved and how it's represented in JSON.
 type Post struct {
@@ -24,11 +26,7 @@ type Post struct {
 
 // TableName sets the table name for the model Post.
 func (post *Post) TableName() string {
-	if tableName := os.Getenv("DB_TABLE_NAME"); tableName != "" {
-		return tableName
-	}
-	// Don't break compatibility
-	return "posts"
+	return tableName
 }
 
 // BeforeCreate returns an error if this post isn't valid, and nil otherwise.
@@ -81,4 +79,13 @@ func randomString(length int) string {
 	}
 
 	return string(b)
+}
+
+// getTableNameOrDefault returns the DB_TABLE_NAME env value or the given default name.
+// This only exists for compatibility purposes.
+func getTableNameOrDefault(defaultName string) string {
+	if envName := env.GetString("DB_TABLE_NAME"); envName != "" {
+		return envName
+	}
+	return defaultName
 }

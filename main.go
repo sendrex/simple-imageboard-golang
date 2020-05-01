@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
 
+	"github.com/AquoDev/simple-imageboard-golang/env"
 	"github.com/AquoDev/simple-imageboard-golang/handler"
 	"github.com/AquoDev/simple-imageboard-golang/middleware"
 	"github.com/labstack/echo/v4"
@@ -56,15 +55,6 @@ func main() {
 	posts.DELETE("", handler.DeletePost, middleware.IPRateLimitStrict(), middleware.CheckHeaders())
 
 	// Start server
-	addr := fmt.Sprintf(":%d", port)
+	addr := fmt.Sprintf(":%d", env.GetInt("PORT"))
 	app.Logger.Fatal(app.Start(addr))
-}
-
-func init() {
-	if parsed, err := strconv.ParseUint(os.Getenv("PORT"), 10, 0); err != nil {
-		message := fmt.Errorf("[SERVER] Couldn't parse PORT @ %w", err)
-		panic(message)
-	} else {
-		port = parsed
-	}
 }

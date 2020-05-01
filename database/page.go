@@ -1,14 +1,11 @@
 package database
 
 import (
-	"fmt"
-	"os"
-	"strconv"
-
+	"github.com/AquoDev/simple-imageboard-golang/env"
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
-var threadsPerPage uint64
+var threadsPerPage = env.GetUint64("THREADS_PER_PAGE")
 
 // GetPage returns a thread list (post slice).
 func GetPage(id uint64) ([]model.Post, error) {
@@ -21,13 +18,4 @@ func GetPage(id uint64) ([]model.Post, error) {
 	}
 
 	return page, nil
-}
-
-func init() {
-	if parseUint, err := strconv.ParseUint(os.Getenv("THREADS_PER_PAGE"), 10, 0); err != nil {
-		message := fmt.Errorf("[DATABASE] Couldn't parse THREADS_PER_PAGE @ %w", err)
-		panic(message)
-	} else {
-		threadsPerPage = parseUint
-	}
 }

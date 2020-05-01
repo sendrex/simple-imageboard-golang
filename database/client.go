@@ -2,10 +2,10 @@ package database
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/AquoDev/simple-imageboard-golang/env"
 	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
+
 	// For Postgres client
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -14,28 +14,19 @@ import (
 var db *gorm.DB
 
 func init() {
-	// Load .env for the first time
-	if err := godotenv.Load(); err != nil {
-		message := fmt.Errorf("[ENV FILE] Read FAILED @ %w", err)
-		panic(message)
-	} else {
-		fmt.Println("[ENV FILE] Read OK")
-	}
-
 	// Parse connection settings
 	settings := fmt.Sprintf(
 		"host=%s port=%s dbname=%s sslmode=%s user=%s password=%s",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_SSLMODE"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
+		env.GetString("DB_HOST"),
+		env.GetString("DB_PORT"),
+		env.GetString("DB_NAME"),
+		env.GetString("DB_SSLMODE"),
+		env.GetString("DB_USER"),
+		env.GetString("DB_PASSWORD"),
 	)
 
-	// Connect the client
-	conn, err := gorm.Open("postgres", settings)
-	if err != nil {
+	// Connect the client and check if it's connected
+	if conn, err := gorm.Open("postgres", settings); err != nil {
 		message := fmt.Errorf("[DATABASE] Client connection FAILED @ %w", err)
 		panic(message)
 	} else {

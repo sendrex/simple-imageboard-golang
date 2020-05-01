@@ -1,15 +1,13 @@
 package database
 
 import (
-	"fmt"
-	"os"
-	"strconv"
 	"time"
 
+	"github.com/AquoDev/simple-imageboard-golang/env"
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
-var postsPerThread uint64
+var postsPerThread = env.GetUint64("POSTS_PER_THREAD")
 
 // GetThread returns a slice of posts.
 func GetThread(id uint64) ([]model.Post, error) {
@@ -54,13 +52,4 @@ func BumpThread(id uint64, updatedAt *time.Time) error {
 	}
 
 	return nil
-}
-
-func init() {
-	if parseUint, err := strconv.ParseUint(os.Getenv("POSTS_PER_THREAD"), 10, 0); err != nil {
-		message := fmt.Errorf("[DATABASE] Couldn't parse POSTS_PER_THREAD @ %w", err)
-		panic(message)
-	} else {
-		postsPerThread = parseUint
-	}
 }
