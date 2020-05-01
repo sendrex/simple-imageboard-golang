@@ -1,3 +1,13 @@
+# Fifth version: update 2
+
+### Refactored
+
+-   `.env` loading and functions to get values from it. This means that almost every `init()` function is useless, because `var`s inside packages can be obtained straight away (except for `{database,redis}` clients and migrations).
+
+### Updated
+
+-   `go.mod` and `go.sum`.
+
 # Fifth version: update 1
 
 ### Added
