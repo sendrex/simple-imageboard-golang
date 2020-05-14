@@ -20,7 +20,7 @@ RUN git checkout -q $(git tag --sort=taggerdate | tail -1)
 RUN cp .env.example .env
 
 # Build server
-RUN go build -o server.bin
+RUN go build -mod=vendor -o server.bin
 
 # Start server
 CMD ["./server.bin"]
