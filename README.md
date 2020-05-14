@@ -1,7 +1,6 @@
-[![GoDoc](https://godoc.org/github.com/AquoDev/simple-imageboard-golang?status.svg)](https://godoc.org/github.com/AquoDev/simple-imageboard-golang)
-[![Go Report Card](https://goreportcard.com/badge/github.com/AquoDev/simple-imageboard-golang)](https://goreportcard.com/report/github.com/AquoDev/simple-imageboard-golang)
-[![Latest release](https://img.shields.io/github/v/release/AquoDev/simple-imageboard-golang)](https://github.com/AquoDev/simple-imageboard-golang/releases/latest)
-![Code size in bytes](https://img.shields.io/github/languages/code-size/AquoDev/simple-imageboard-golang)
+[![GoDev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go)](https://pkg.go.dev/github.com/AquoDev/simple-imageboard-golang?tab=overview)
+[![Go report card](https://goreportcard.com/badge/github.com/AquoDev/simple-imageboard-golang)](https://goreportcard.com/report/github.com/AquoDev/simple-imageboard-golang)
+[![Latest release](https://img.shields.io/github/v/release/AquoDev/simple-imageboard-golang?logo=github)](https://github.com/AquoDev/simple-imageboard-golang/releases/latest)
 ![License](https://img.shields.io/github/license/AquoDev/simple-imageboard-golang)
 
 # Simple Imageboard
@@ -29,7 +28,7 @@
 -   [Local deployment](#local-deployment)
     -   [Redis: set and share password](#redis-set-and-share-password)
     -   [Database: create database and user](#database-create-database-and-user)
-    -   [Server: build and start it](#server-build-and-start-it)
+    -   [Server: build and run](#server-build-and-run)
 -   [Mixed deployment](#mixed-deployment)
     -   [Only Redis as container](#only-redis-as-container)
     -   [Only Postgres as container](#only-postgres-as-container)
@@ -148,13 +147,25 @@ sudo -u postgres psql
 
 `Tables are automatically created after starting the server for the first time.`
 
-### Server: build and start it
+### Server: build and run
 
 You can edit the listening port in `.env` and put a reverse proxy in front of this server.
+
+Dependencies are bundled with the project (`vendor` directory), but if you wish to download them, use the online method.
+
+- Local
+
+```console
+go build -mod=vendor -o server.bin
+```
+
+- Online
 
 ```console
 go build -o server.bin
 ```
+
+Finally, you can run the server.
 
 ```console
 ./server.bin
