@@ -1,3 +1,15 @@
+# Fifth version: update 3
+
+### Added
+
+-   `vendor` directory. All dependencies are now bundled with the project, so there's no need to download them.
+
+### Updated
+
+-   `Dockerfile` uses the local method.
+-   `README.md` with the new building method.
+-   `go.mod` and `go.sum`.
+
 # Fifth version: update 2
 
 ### Refactored
