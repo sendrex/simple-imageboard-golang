@@ -7,9 +7,9 @@ import (
 	"time"
 )
 
-// GetString returns the string value from .env. Special case: compatibility for DB_TABLE_NAME.
+// GetString returns the string value from .env.
 func GetString(key string) string {
-	if env := os.Getenv(key); env == "" && key != "DB_TABLE_NAME" {
+	if env := os.Getenv(key); env == "" {
 		message := fmt.Errorf("[ENV] %s env value is empty", key)
 		panic(message)
 	} else {
@@ -27,9 +27,19 @@ func GetInt(key string) int {
 	}
 }
 
+// GetInt64 returns the int64 value from .env.
+func GetInt64(key string) int64 {
+	if env, err := strconv.ParseInt(GetString(key), 10, 64); err != nil {
+		message := fmt.Errorf("[ENV] Couldn't parse %s to int64", key)
+		panic(message)
+	} else {
+		return env
+	}
+}
+
 // GetUint64 returns the uint64 value from .env.
 func GetUint64(key string) uint64 {
-	if env, err := strconv.ParseUint(GetString(key), 10, 0); err != nil {
+	if env, err := strconv.ParseUint(GetString(key), 10, 64); err != nil {
 		message := fmt.Errorf("[ENV] Couldn't parse %s to uint64", key)
 		panic(message)
 	} else {
