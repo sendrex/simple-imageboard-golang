@@ -1,8 +1,27 @@
-# Hide credentials
+# Hide credentials <IMPORTANT!>
 .env
 
-# Hide standard output from "go build"
-simple-imageboard-golang
+# Ignore every content in static/, except robots.txt and index.html
+static/*
+!static/robots.txt
+!static/index.html
 
-# Hide output from "go build -o server.bin"
+# Hide output from "go build" and "go build -o server.bin"
+simple-imageboard-golang
 server.bin
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Others
+/Godeps/
