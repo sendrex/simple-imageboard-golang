@@ -1,8 +1,7 @@
-# Start from Golang v1.13 base image
-# NOTE: It can't be updated to Golang 1.14 until the first issue is fixed:
-#   - https://github.com/golang/go/issues/37436
-#   - https://github.com/docker-library/golang/issues/320
-FROM golang:1.13.8-alpine3.11
+##########################################################
+# Start from Golang v1.14 base image to build the server #
+##########################################################
+FROM golang:1.14.4-alpine3.12 as build
 
 # Download Git
 RUN apk update && apk add --no-cache git
@@ -16,11 +15,18 @@ WORKDIR /app
 # Checkout latest tag
 RUN git checkout -q $(git tag --sort=taggerdate | tail -1)
 
-# Copy .env.example to .env
-RUN cp .env.example .env
-
 # Build server
-RUN go build -mod=vendor -o server.bin
+RUN CGO_ENABLED=0 go build -mod=vendor
 
-# Start server
-CMD ["./server.bin"]
+####################################
+# Run the server in this container #
+####################################
+FROM alpine:3.12
+
+WORKDIR /app
+
+COPY --from=build /app/.env.example .env
+COPY --from=build /app/static/ static/
+COPY --from=build /app/simple-imageboard-golang .
+
+CMD ["./simple-imageboard-golang"]

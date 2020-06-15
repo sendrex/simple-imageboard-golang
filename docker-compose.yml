@@ -1,8 +1,8 @@
-version: "3.3"
+version: "3.7"
 
 services:
   redis:
-    image: redis:5.0.7-alpine3.11
+    image: redis:6.0.5-alpine3.12
     restart: always
     privileged: false
     sysctls:
@@ -21,7 +21,7 @@ services:
       - redis-data:/data
 
   database:
-    image: postgres:12.2-alpine
+    image: postgres:12.3-alpine
     restart: always
     privileged: false
     container_name: database-simple-imageboard
@@ -58,6 +58,7 @@ services:
       - DB_HOST=database
     volumes:
       - .env:/app/.env
+      - ./static/:/app/static/
 
 networks:
   internal_network:
