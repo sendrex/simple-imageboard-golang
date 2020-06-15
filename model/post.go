@@ -10,7 +10,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var tableName = getTableNameOrDefault("posts")
+var tableName = env.GetString("DB_TABLE_NAME")
 
 // Post defines the table in which the posts will be saved and how it's represented in JSON.
 type Post struct {
@@ -79,13 +79,4 @@ func randomString(length int) string {
 	}
 
 	return string(b)
-}
-
-// getTableNameOrDefault returns the DB_TABLE_NAME env value or the given default name.
-// This only exists for compatibility purposes.
-func getTableNameOrDefault(defaultName string) string {
-	if envName := env.GetString("DB_TABLE_NAME"); envName != "" {
-		return envName
-	}
-	return defaultName
 }
