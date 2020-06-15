@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	maxTimeIndex  = env.GetTime("REDIS_EXPIRE_TIME_INDEX", "s")
 	maxTimePage   = env.GetTime("REDIS_EXPIRE_TIME_PAGE", "s")
 	maxTimeThread = env.GetTime("REDIS_EXPIRE_TIME_THREAD", "s")
 	maxTimePost   = env.GetTime("REDIS_EXPIRE_TIME_POST", "s")
@@ -26,6 +27,12 @@ func setCachedModel(key string, status int, data interface{}, duration time.Dura
 	}
 	// Set JSON in cache
 	return client.Set(key, string(cache), duration).Err()
+}
+
+// SetCachedIndex sets a thread list or error in cache.
+func SetCachedIndex(status int, data interface{}) error {
+	key := getIndexKey()
+	return setCachedModel(key, status, data, maxTimeIndex)
 }
 
 // SetCachedPage sets a page or error in cache.

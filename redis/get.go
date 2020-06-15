@@ -22,6 +22,12 @@ func getCachedModel(key string) (*model.Cache, error) {
 	return cache, nil
 }
 
+// GetCachedIndex returns a cached list or error.
+func GetCachedIndex() (*model.Cache, error) {
+	key := getIndexKey()
+	return getCachedModel(key)
+}
+
 // GetCachedPage returns a cached page or error.
 func GetCachedPage(id uint64) (*model.Cache, error) {
 	key := getPageKey(id)

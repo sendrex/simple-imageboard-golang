@@ -37,6 +37,9 @@ func main() {
 	app.GET("/health", handler.GetHealthcheck)
 	app.GET("/settings", handler.GetBoardSettings)
 
+	// Set index routing
+	app.GET("/index", handler.GetIndex)
+
 	// Set page routing
 	pages := app.Group("/page")
 	pages.GET("", handler.GetPageExample)
