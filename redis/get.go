@@ -13,24 +13,18 @@ func getCachedModel(key string) (*model.Cache, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Parse JSON
+
+	// Parse JSON into a struct
 	cache := new(model.Cache)
-	if err := json.Unmarshal([]byte(result), &cache); err != nil {
-		return nil, err
-	}
-	// Return cached data
-	return cache, nil
+	err = json.Unmarshal([]byte(result), &cache)
+
+	// Return cached data and error
+	return cache, err
 }
 
-// GetCachedIndex returns a cached list or error.
+// GetCachedIndex returns a cached index or error.
 func GetCachedIndex() (*model.Cache, error) {
 	key := getIndexKey()
-	return getCachedModel(key)
-}
-
-// GetCachedPage returns a cached page or error.
-func GetCachedPage(id uint64) (*model.Cache, error) {
-	key := getPageKey(id)
 	return getCachedModel(key)
 }
 

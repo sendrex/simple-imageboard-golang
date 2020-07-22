@@ -10,14 +10,13 @@ import (
 
 var (
 	maxTimeIndex  = env.GetTime("REDIS_EXPIRE_TIME_INDEX", "s")
-	maxTimePage   = env.GetTime("REDIS_EXPIRE_TIME_PAGE", "s")
 	maxTimeThread = env.GetTime("REDIS_EXPIRE_TIME_THREAD", "s")
 	maxTimePost   = env.GetTime("REDIS_EXPIRE_TIME_POST", "s")
 )
 
-// setCachedModel caches any generic struct or interface as a JSON string.
+// setCachedModel caches any struct as JSON.
 func setCachedModel(key string, status int, data interface{}, duration time.Duration) error {
-	// Marshal status and data into JSON
+	// Parse struct into JSON
 	cache, err := json.Marshal(&model.Cache{
 		Status: status,
 		Data:   data,
@@ -25,20 +24,15 @@ func setCachedModel(key string, status int, data interface{}, duration time.Dura
 	if err != nil {
 		return err
 	}
-	// Set JSON in cache
+
+	// Cache JSON
 	return client.Set(key, string(cache), duration).Err()
 }
 
-// SetCachedIndex sets a thread list or error in cache.
+// SetCachedIndex sets an index or error in cache.
 func SetCachedIndex(status int, data interface{}) error {
 	key := getIndexKey()
 	return setCachedModel(key, status, data, maxTimeIndex)
-}
-
-// SetCachedPage sets a page or error in cache.
-func SetCachedPage(id uint64, status int, data interface{}) error {
-	key := getPageKey(id)
-	return setCachedModel(key, status, data, maxTimePage)
 }
 
 // SetCachedThread sets a thread or error in cache.
