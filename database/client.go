@@ -10,12 +10,17 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-// Client connection to database
+// Client connection to database.
 var db *gorm.DB
 
+func connect(settings string) (err error) {
+	db, err = gorm.Open("postgres", settings)
+	return
+}
+
 func init() {
-	// Parse connection settings
-	settings := fmt.Sprintf(
+	// Connect the client and panic if there are errors
+	if err := connect(fmt.Sprintf(
 		"host=%s port=%s dbname=%s sslmode=%s user=%s password=%s",
 		env.GetString("DB_HOST"),
 		env.GetString("DB_PORT"),
@@ -23,14 +28,10 @@ func init() {
 		env.GetString("DB_SSLMODE"),
 		env.GetString("DB_USER"),
 		env.GetString("DB_PASSWORD"),
-	)
-
-	// Connect the client and check if it's connected
-	if conn, err := gorm.Open("postgres", settings); err != nil {
-		message := fmt.Errorf("[DATABASE] Client connection FAILED @ %w", err)
+	)); err != nil {
+		message := fmt.Errorf("[DATABASE] connection failed @ %w", err)
 		panic(message)
-	} else {
-		db = conn
-		fmt.Println("[DATABASE] Client connection OK")
 	}
+
+	fmt.Println("[DATABASE] connection OK")
 }

@@ -10,21 +10,23 @@ import (
 // Redis client connection.
 var client *redis.Client
 
+func connect(opt *redis.Options) error {
+	client = redis.NewClient(opt)
+	return client.Ping().Err()
+}
+
 func init() {
-	// Connect the client
-	client = redis.NewClient(&redis.Options{
+	// Connect the client and panic if there are errors
+	if err := connect(&redis.Options{
 		Addr:       fmt.Sprintf("%s:%d", env.GetString("REDIS_HOST"), env.GetInt("REDIS_PORT")),
 		PoolSize:   100,
 		MaxRetries: 1,
 		Password:   env.GetString("REDIS_PASSWORD"),
 		DB:         env.GetInt("REDIS_DATABASE"),
-	})
-
-	// Check if it's connected
-	if err := client.Ping().Err(); err != nil {
-		message := fmt.Errorf("[REDIS] Client connection FAILED @ %w", err)
+	}); err != nil {
+		message := fmt.Errorf("[REDIS] connection failed @ %w", err)
 		panic(message)
-	} else {
-		fmt.Println("   [REDIS] Client connection OK")
 	}
+
+	fmt.Println("[REDIS] connection OK")
 }
