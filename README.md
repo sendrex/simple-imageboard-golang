@@ -1,4 +1,5 @@
 - [Simple Imageboard](#simple-imageboard)
+- [Flow diagram](#flow-diagram)
 - [Prerequisites](#prerequisites)
     - [For container deployment](#for-container-deployment)
     - [For local deployment](#for-local-deployment)
@@ -31,8 +32,12 @@
 [![Latest release](https://img.shields.io/github/v/release/AquoDev/simple-imageboard-golang?logo=github)](https://github.com/AquoDev/simple-imageboard-golang/releases/latest)
 ![License](https://img.shields.io/github/license/AquoDev/simple-imageboard-golang)
 
-![Diagram](https://i.imgur.com/8YVWuRM.png)
+![Diagram](https://i.imgur.com/MsP4QU4.png)
 **Everything is a post.**
+
+# Flow diagram
+
+![Diagram](https://i.imgur.com/FyOZ7MO.png)
 
 # Prerequisites
 
