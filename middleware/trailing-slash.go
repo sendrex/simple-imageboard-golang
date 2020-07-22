@@ -1,11 +1,10 @@
 package middleware
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/AquoDev/simple-imageboard-golang/framework"
 )
 
 // RemoveTrailingSlash removes the trailing slash from URLs.
-func RemoveTrailingSlash() echo.MiddlewareFunc {
-	return middleware.RemoveTrailingSlash()
+func RemoveTrailingSlash() framework.MiddlewareFunc {
+	return framework.RemoveTrailingSlash()
 }

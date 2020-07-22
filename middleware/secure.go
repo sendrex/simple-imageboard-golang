@@ -1,11 +1,10 @@
 package middleware
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/AquoDev/simple-imageboard-golang/framework"
 )
 
 // Secure adds to the response some headers to increase protection.
-func Secure() echo.MiddlewareFunc {
-	return middleware.Secure()
+func Secure() framework.MiddlewareFunc {
+	return framework.Secure()
 }
