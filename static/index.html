@@ -2,91 +2,92 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🖕🏽</title>
-    <style rel="stylesheet">
-        body {
-            padding: 2vh 30vw;
-            font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
-        }
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>🖕🏽</title>
+	<style rel="stylesheet">
+		body {
+			padding: 2vh 30vw;
+			font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
+		}
 
-        @media all and (orientation: portrait),
-        (max-width: 85em) {
-            body {
-                padding: 2vh 5vw;
-            }
-        }
+		@media all and (orientation: portrait),
+		(max-width: 85em) {
+			body {
+				padding: 2vh 5vw;
+			}
+		}
 
-        h1,
-        h3 {
-            text-align: center;
-        }
+		h1,
+		h3 {
+			text-align: center;
+		}
 
-        p {
-            margin-top: 3rem;
-            margin-bottom: 0;
-            font-weight: bold;
-        }
+		p {
+			margin-top: 3rem;
+			margin-bottom: 0;
+			font-weight: bold;
+		}
 
-        ul>li {
-            line-height: 1rem;
-        }
+		ul>li {
+			line-height: 1rem;
+		}
 
-        code {
-            border: 1px solid rgb(209, 209, 209);
-            border-radius: 2px;
-            background-color: rgb(235, 235, 235);
-            padding: 1em;
-            margin: 1em 0;
-            line-height: 2rem;
-            display: block;
-        }
+		code {
+			border: 1px solid rgb(209, 209, 209);
+			border-radius: 2px;
+			background-color: rgb(235, 235, 235);
+			padding: 1em;
+			margin: 1em 0;
+			line-height: 2rem;
+			display: block;
+		}
 
-        span {
-            color: red;
-        }
-    </style>
+		span {
+			color: red;
+		}
+	</style>
 </head>
 
 <body>
-    <h1>Simple Imageboard</h1>
-    <h3>Quick Guide</h3>
+	<h1>Simple Imageboard</h1>
+	<h3>Quick Guide</h3>
 
-    <p>GET</p>
-    <code>/index</code>
-    <code>/page/[0-9]</code>
-    <code>/thread/[1-9][0-9]*</code>
-    <code>/post/[1-9][0-9]*</code>
-    <code>/health</code>
-    <code>/settings</code>
+	<p>GET</p>
+	<code>/index</code>
+	<code>/thread/[1-9][0-9]*</code>
+	<code>/post/[1-9][0-9]*</code>
+	<code>/health</code>
+	<code>/settings</code>
+	<code>/robots.txt</code>
 
-    <p>POST</p>
-    <code>/post</code>
-    <code>
-        Header:<br />
-        - <b>Content-Type</b>: application/json; charset=UTF-8<br />
-        <br />
-        Body:<br />
-        - <b>content</b>: <span>[required, type: string, min: 1, max: 1000]</span> &lt;post content&gt;<br />
-        - <b>reply_to</b>: <span>[optional, type: uint64]</span> &lt;post id you reply to&gt; OR null to make a new thread<br />
-        - <b>pic</b>: <span>[optional, type: string, max: 512]</span> &lt;direct external image url&gt; OR null<br />
-        - <b>delete_code</b>: <span>[optional, type: string, max: 128]</span> &lt;password to delete the post any time&gt; OR null to make a random one of 32 characters long<br />
-    </code>
+	<p>POST</p>
+	<code>/post</code>
+	<code>
+		Header:<br />
+		- <b>Content-Type</b>: application/json; charset=UTF-8<br />
+		<br />
+		Body:<br />
+		- <b>content</b>: <span>[required, type: string, min: 1, max: 1000]</span> &lt;post content&gt;<br />
+		- <b>reply_to</b>: <span>[optional, type: uint64]</span> &lt;post id you reply to&gt; OR null to make a new thread<br />
+		- <b>pic</b>: <span>[optional, type: string, max: 512]</span> &lt;direct external image url&gt; OR null<br />
+		- <b>delete_code</b>: <span>[optional, type: string, max: 128]</span> &lt;password to delete the post any time&gt; OR null to make a random one of 32 characters long<br />
+		- <b>sage</b>: <span>[optional, type: boolean]</span> &lt;bump thread when it's set to true&gt; OR null<br />
+	</code>
 
-    <p>DELETE</p>
-    <code>/post</code>
-    <code>
-        Header:<br />
-        - <b>Content-Type</b>: application/json; charset=UTF-8<br />
-        <br />
-        Body:<br />
-        - <b>id</b>: <span>[required, type: uint64]</span> &lt;post id&gt;<br />
-        - <b>delete_code</b>: <span>[required, type: string]</span> &lt;code received after successful posting&gt;<br />
-        <br />
-        WARNING:<br />
-        - <b><span>if your post started a parent thread, every reply will also be deleted</span></b>
-    </code>
+	<p>DELETE</p>
+	<code>/post</code>
+	<code>
+		Header:<br />
+		- <b>Content-Type</b>: application/json; charset=UTF-8<br />
+		<br />
+		Body:<br />
+		- <b>id</b>: <span>[required, type: uint64]</span> &lt;post id&gt;<br />
+		- <b>delete_code</b>: <span>[required, type: string]</span> &lt;code received after successful posting&gt;<br />
+		<br />
+		WARNING:<br />
+		- <b><span>if your post started a parent thread, every reply will also be deleted</span></b>
+	</code>
 </body>
 
 </html>

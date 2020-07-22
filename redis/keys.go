@@ -24,12 +24,6 @@ func getIndexKey() string {
 	return prefix("index")
 }
 
-// getPageKey returns a string that corresponds to a 'page' key in Redis.
-// Key format: "<table name>:page:<id>"
-func getPageKey(id uint64) string {
-	return fmt.Sprintf("%s%s", prefix("page"), suffix(id))
-}
-
 // getThreadKey returns a string that corresponds to a 'thread' key in Redis.
 // Key format: "<table name>:thread:<id>"
 func getThreadKey(id uint64) string {
