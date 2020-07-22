@@ -37,7 +37,7 @@
 
 # Flow diagram
 
-![Diagram](https://i.imgur.com/FyOZ7MO.png)
+![Diagram](https://i.imgur.com/lum9YPa.png)
 
 # Prerequisites
 
