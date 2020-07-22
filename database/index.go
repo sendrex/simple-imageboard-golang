@@ -4,15 +4,12 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
-// GetIndex returns every post that started a thread (post slice).
+// GetIndex returns every post that started a thread.
 func GetIndex() ([]model.Post, error) {
-	// Make empty list
-	page := make([]model.Post, 0)
-
 	// Query posts that started a thread (parent_thread IS NULL)
-	if err := db.Select("id, content, pic, created_at, updated_at").Where("parent_thread IS NULL").Order("updated_at desc").Find(&page).Error; err != nil {
-		return nil, err
-	}
+	index := make([]model.Post, 0)
+	err := db.Select("id, content, pic, created_at, updated_at").Where("parent_thread IS NULL").Order("updated_at desc").Find(&index).Error
 
-	return page, nil
+	// Return index and error
+	return index, err
 }

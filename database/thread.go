@@ -1,55 +1,67 @@
 package database
 
 import (
-	"time"
+	"errors"
 
 	"github.com/AquoDev/simple-imageboard-golang/env"
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
-var postsPerThread = env.GetUint64("POSTS_PER_THREAD")
+var (
+	postsPerThread   = env.GetUint64("POSTS_PER_THREAD")
+	maxParentThreads = env.GetUint64("MAX_PARENT_THREADS")
+)
 
-// GetThread returns a slice of posts.
+// GetThread returns every post that belong to a thread.
 func GetThread(id uint64) ([]model.Post, error) {
-	// Make empty thread
+	// Query every post that belong to a thread given its ID
 	thread := make([]model.Post, 0)
+	err := db.Select("id, content, pic, reply_to, created_at").Where("id = ?", id).Or("parent_thread = ?", id).Or("reply_to = ?", id).Order("id asc").Find(&thread).Error
 
-	// Query posts that belong to a thread
-	if err := db.Select("id, content, pic, reply_to, created_at").Where("id = ?", id).Or("parent_thread = ?", id).Or("reply_to = ?", id).Order("id asc").Find(&thread).Error; err != nil {
+	if err != nil {
+		// If there's any error, return it
 		return nil, err
+	} else if len(thread) == 0 {
+		// If it's empty, return a new error
+		return nil, errors.New("thread doesn't exist")
 	}
 
+	// Return thread without error
 	return thread, nil
 }
 
-// DeleteOldThreads deletes any thread older than the last bump date in page 9.
+// DeleteOldThreads deletes any thread that's fallen from the index.
 func DeleteOldThreads() error {
-	// Make empty slice of IDs
+	// Query IDs from old threads
 	threadIDs := make([]uint64, 0)
+	err := db.Model(&model.Post{}).Offset(maxParentThreads).Where("parent_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs).Error
 
-	// Query IDs from old threads and save them in the slice and check if there aren't IDs found
-	if result := db.Model(&model.Post{}).Offset(threadsPerPage*10).Where("parent_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs); len(threadIDs) == 0 {
-		// If there's none, return the error
-		return result.Error
+	if err != nil {
+		// If there's any error, return it
+		return err
+	} else if len(threadIDs) > 0 {
+		// If there are threads to delete, delete them
+		return db.Where("id IN (?)", threadIDs).Delete(&model.Post{}).Error
 	}
 
-	// Delete old threads as defined in the slice
-	return db.Where("id IN (?)", threadIDs).Delete(&model.Post{}).Error
+	// No threads to delete
+	return nil
 }
 
-// BumpThread updates the post's "updated_at" field.
-func BumpThread(id uint64, updatedAt *time.Time) error {
+// BumpThread updates the parent thread from a given post.
+func BumpThread(post *model.Post) error {
+	// Query count of posts that belong to a thread given the parent post ID from a post
 	var threadLength uint64
+	err := db.Model(&model.Post{}).Where("id = ?", *post.ParentThread).Or("parent_thread = ?", *post.ParentThread).Order("id asc").Count(&threadLength).Error
 
-	// Query posts that belong to a thread
-	if err := db.Model(&model.Post{}).Where("id = ?", id).Or("parent_thread = ?", id).Order("id asc").Count(&threadLength).Error; err != nil {
+	if err != nil {
+		// If there's any error, return it
 		return err
+	} else if threadLength < postsPerThread {
+		// If there are less than "max" posts in the thread, update it
+		return db.Model(&model.Post{}).Where("id = ?", *post.ParentThread).Update("updated_at", post.UpdatedAt).Error
 	}
 
-	// If there are less than "max" posts in the thread, update it
-	if threadLength < postsPerThread {
-		return db.Model(&model.Post{}).Where("id = ?", id).Update("updated_at", updatedAt).Error
-	}
-
+	// Thread is not bumped because it reached bump limit
 	return nil
 }

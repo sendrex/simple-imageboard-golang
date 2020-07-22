@@ -4,17 +4,14 @@ import (
 	"github.com/AquoDev/simple-imageboard-golang/model"
 )
 
-// GetPost returns a post.
+// GetPost returns a post given its ID.
 func GetPost(id uint64) (*model.Post, error) {
-	// Make empty post
+	// Query post given its ID
 	post := new(model.Post)
+	err := db.Select("id, content, pic, parent_thread, reply_to, created_at, updated_at").Where("id = ?", id).First(&post).Error
 
-	// Query post
-	if err := db.Select("id, content, pic, parent_thread, reply_to, created_at, updated_at").Where("id = ?", id).First(&post).Error; err != nil {
-		return nil, err
-	}
-
-	return post, nil
+	// Return post and error
+	return post, err
 }
 
 // SavePost returns a struct with the ID and delete code of the inserted post.
@@ -24,7 +21,7 @@ func SavePost(post *model.Post) (*model.DeleteData, error) {
 		return nil, err
 	}
 
-	// If it's inserted, return delete data
+	// If it's been inserted, return delete data without error
 	return &model.DeleteData{
 		ID:         post.ID,
 		DeleteCode: post.DeleteCode,
@@ -35,15 +32,15 @@ func SavePost(post *model.Post) (*model.DeleteData, error) {
 // Warning: if the post started a thread (parent_thread == nil), it will delete
 // every post in the thread (parent_thread == id).
 func DeletePost(data *model.DeleteData) error {
-	// Make empty post
+	// Query post and check if the data is valid
 	post := new(model.Post)
+	err := db.Where("id = ? AND delete_code = ?", data.ID, data.DeleteCode).First(&post).Error
 
-	// Query post and check if the post hasn't been found
-	if result := db.Where("id = ? AND delete_code = ?", data.ID, data.DeleteCode).First(&post); result.RecordNotFound() {
-		// If it hasn't, return the error
-		return result.Error
+	// If there's any error, return it
+	if err != nil {
+		return err
 	}
 
-	// Delete the post if the delete code is correct
+	// Delete the post
 	return db.Delete(&post).Error
 }
