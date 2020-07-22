@@ -1,3 +1,33 @@
+# Seventh version
+
+### Added
+
+- New `.env` value: `MAX_PARENT_THREADS`.
+- Validation functions for `model/delete_data.go`.
+- Validation and handling functions for `model/post.go`.
+
+### Removed
+
+- `/page` endpoint. No need to have parent threads paginated as everything's in `/index`.
+- Deprecated `.env` values:
+  - `THREADS_PER_PAGE`
+  - `REDIS_EXPIRE_TIME_PAGE`
+
+### Refactored
+
+- All functionality from `echo` is wrapped up in a single package: `framework`.
+- `connect()` function for `database` and `redis` clients.
+- Improved queries in `database` package.
+- Improved error handling and descriptions.
+
+### Updated
+
+- `handler`, `middleware` and `main` packages to use the `framework` one.
+- `README.md` with new images.
+- Quick guide (`static/index.html`).
+- `go.mod` and `go.sum`.
+- `vendor` directory.
+
 # Sixth version
 
 ### Added
