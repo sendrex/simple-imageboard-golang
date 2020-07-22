@@ -1,3 +1,9 @@
+# Seventh version: update 1
+
+### Added
+
+- `sage` option: don't bump parent thread when it's set to **true**.
+
 # Seventh version
 
 ### Added
