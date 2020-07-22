@@ -4,19 +4,14 @@ import (
 	"fmt"
 
 	"github.com/AquoDev/simple-imageboard-golang/env"
+	"github.com/AquoDev/simple-imageboard-golang/framework"
 	"github.com/AquoDev/simple-imageboard-golang/handler"
 	"github.com/AquoDev/simple-imageboard-golang/middleware"
-	"github.com/labstack/echo/v4"
 )
 
-var port uint64
-
 func main() {
-	// Make empty Echo instance
-	app := echo.New()
-
-	// Hide Echo banner
-	app.HideBanner = true
+	// Make empty instance
+	app := framework.NewApp()
 
 	// Remove trailing slash from URLs
 	app.Pre(middleware.RemoveTrailingSlash())
@@ -25,7 +20,7 @@ func main() {
 	app.Use(middleware.Secure())
 
 	// Register default CORS on every route
-	app.Use(middleware.GetCORSdefault())
+	app.Use(middleware.DefaultCORS())
 
 	// Set regular limiter for every route
 	app.Use(middleware.IPRateLimitRegular())
@@ -40,22 +35,17 @@ func main() {
 	// Set index routing
 	app.GET("/index", handler.GetIndex)
 
-	// Set page routing
-	pages := app.Group("/page")
-	pages.GET("", handler.GetPageExample)
-	pages.GET("/:id", handler.GetPage)
-
 	// Set thread routing
 	threads := app.Group("/thread")
 	threads.GET("", handler.GetThreadExample)
 	threads.GET("/:id", handler.GetThread)
 
 	// Set post routing
-	posts := app.Group("/post", middleware.GetCORSpost())
+	posts := app.Group("/post", middleware.ExtendedCORS())
 	posts.GET("", handler.GetPostExample)
 	posts.GET("/:id", handler.GetPost)
-	posts.POST("", handler.SavePost, middleware.IPRateLimitStrict(), middleware.CheckHeaders())
-	posts.DELETE("", handler.DeletePost, middleware.IPRateLimitStrict(), middleware.CheckHeaders())
+	posts.POST("", handler.SavePost, middleware.IPRateLimitStrict(), middleware.CheckHeader())
+	posts.DELETE("", handler.DeletePost, middleware.IPRateLimitStrict(), middleware.CheckHeader())
 
 	// Start server
 	addr := fmt.Sprintf(":%d", env.GetInt("PORT"))
