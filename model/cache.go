@@ -1,6 +1,6 @@
 package model
 
-// Cache is a struct in which data to cache with a status is parsed from/to JSON.
+// Cache is a struct used for caching posts, threads, index or errors.
 type Cache struct {
 	Status int         `json:"status"`
 	Data   interface{} `json:"data"`
