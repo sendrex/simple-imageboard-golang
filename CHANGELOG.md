@@ -1,3 +1,11 @@
+# Seventh version: update 2
+
+### Updated
+
+- Redis and Golang tags of Docker images.
+- `go.mod` and `go.sum`.
+- `vendor` directory.
+
 # Seventh version: update 1
 
 ### Added
