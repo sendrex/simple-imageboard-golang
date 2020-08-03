@@ -23,14 +23,9 @@ func SendError(status int) *HTTPError {
 	return echo.NewHTTPError(status)
 }
 
-// GetID gets the ID param from the URL and parses it, then it's returned with an error to be checked in the handler.
+// GetID gets the ID param from the URL and is returned with an error to be checked in the handler.
 func GetID(ctx Context) (uint64, error) {
 	return strconv.ParseUint(ctx.Param("id"), 10, 64)
-}
-
-// GetContentType returns the "Content-Type" from the request's header.
-func GetContentType(ctx Context) string {
-	return ctx.Request().Header.Get("Content-Type")
 }
 
 // BindPost returns a post struct extracted from the body and an error to be checked in the handler.
@@ -40,12 +35,9 @@ func BindPost(ctx Context) (*model.Post, error) {
 	if err := ctx.Bind(&post); err != nil {
 		// If data couldn't be binded, return that error
 		return nil, err
-	} else if err := post.Validate(); err != nil {
-		// If data has been binded but it's invalid, return that error
-		return nil, err
 	}
 
-	return post, nil
+	return post, post.Validate()
 }
 
 // BindDeleteData returns a delete data struct extracted from the body and an error to be checked in the handler.
@@ -55,10 +47,7 @@ func BindDeleteData(ctx Context) (*model.DeleteData, error) {
 	if err := ctx.Bind(&deleteData); err != nil {
 		// If data couldn't be binded, return that error
 		return nil, err
-	} else if err := deleteData.Validate(); err != nil {
-		// If data has been binded but it's invalid, return that error
-		return nil, err
 	}
 
-	return deleteData, nil
+	return deleteData, deleteData.Validate()
 }

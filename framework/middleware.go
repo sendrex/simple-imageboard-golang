@@ -14,7 +14,7 @@ func CheckHeader(expectedContentType string) MiddlewareFunc {
 	return func(next HandlerFunc) HandlerFunc {
 		return func(ctx Context) error {
 			// Check "Content-Type"
-			if GetContentType(ctx) != expectedContentType {
+			if ctx.Request().Header.Get("Content-Type") != expectedContentType {
 				return SendError(http.StatusBadRequest)
 			}
 			return next(ctx)
