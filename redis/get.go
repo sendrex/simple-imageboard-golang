@@ -9,14 +9,14 @@ import (
 // getCachedModel returns a generic cached model.
 func getCachedModel(key string) (*model.Cache, error) {
 	// Get cached JSON
-	result, err := client.Get(key).Result()
+	result, err := client.Get(key).Bytes()
 	if err != nil {
 		return nil, err
 	}
 
 	// Parse JSON into a struct
 	cache := new(model.Cache)
-	err = json.Unmarshal([]byte(result), &cache)
+	err = json.Unmarshal(result, cache)
 
 	// Return cached data and error
 	return cache, err

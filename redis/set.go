@@ -16,7 +16,7 @@ var (
 
 // setCachedModel caches any struct as JSON.
 func setCachedModel(key string, status int, data interface{}, duration time.Duration) error {
-	// Parse struct into JSON
+	// Parse status and data into JSON
 	cache, err := json.Marshal(&model.Cache{
 		Status: status,
 		Data:   data,
@@ -26,23 +26,23 @@ func setCachedModel(key string, status int, data interface{}, duration time.Dura
 	}
 
 	// Cache JSON
-	return client.Set(key, string(cache), duration).Err()
+	return client.Set(key, cache, duration).Err()
 }
 
-// SetCachedIndex sets an index or error in cache.
-func SetCachedIndex(status int, data interface{}) error {
+// SetCachedIndex sets an index or error (data == nil) in cache.
+func SetCachedIndex(status int, data []model.Post) error {
 	key := getIndexKey()
 	return setCachedModel(key, status, data, maxTimeIndex)
 }
 
-// SetCachedThread sets a thread or error in cache.
-func SetCachedThread(id uint64, status int, data interface{}) error {
+// SetCachedThread sets a thread or error (data == nil) in cache.
+func SetCachedThread(id uint64, status int, data []model.Post) error {
 	key := getThreadKey(id)
 	return setCachedModel(key, status, data, maxTimeThread)
 }
 
-// SetCachedPost sets a post or error in cache.
-func SetCachedPost(id uint64, status int, data interface{}) error {
+// SetCachedPost sets a post or error (data == nil) in cache.
+func SetCachedPost(id uint64, status int, data *model.Post) error {
 	key := getPostKey(id)
 	return setCachedModel(key, status, data, maxTimePost)
 }
