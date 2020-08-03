@@ -1,7 +1,7 @@
 ##########################################################
 # Start from Golang v1.14 base image to build the server #
 ##########################################################
-FROM golang:1.14.4-alpine3.12 as build
+FROM golang:1.14.6-alpine3.12 as build
 
 # Download Git
 RUN apk update && apk add --no-cache git
