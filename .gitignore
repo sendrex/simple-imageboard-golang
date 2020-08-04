@@ -1,14 +1,14 @@
 # Hide credentials <IMPORTANT!>
 .env
 
-# Ignore every content in static/, except robots.txt and index.html
+# Ignore every file in static/, except robots.txt and index.html
 static/*
 !static/robots.txt
 !static/index.html
 
-# Hide output from "go build" and "go build -o server.bin"
-simple-imageboard-golang
-server.bin
+# Hide output from "go build ./cmd/server-simple-imageboard", except the directory
+server-simple-imageboard
+!cmd/server-simple-imageboard/
 
 # Binaries for programs and plugins
 *.exe
