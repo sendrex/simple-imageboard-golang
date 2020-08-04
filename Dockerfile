@@ -16,7 +16,7 @@ WORKDIR /app
 RUN git checkout -q $(git tag --sort=taggerdate | tail -1)
 
 # Build server
-RUN CGO_ENABLED=0 go build -mod=vendor
+RUN CGO_ENABLED=0 go build -mod=vendor ./cmd/server-simple-imageboard
 
 ####################################
 # Run the server in this container #
@@ -27,6 +27,6 @@ WORKDIR /app
 
 COPY --from=build /app/.env.example .env
 COPY --from=build /app/static/ static/
-COPY --from=build /app/simple-imageboard-golang .
+COPY --from=build /app/server-simple-imageboard .
 
-CMD ["./simple-imageboard-golang"]
+CMD ["./server-simple-imageboard"]
