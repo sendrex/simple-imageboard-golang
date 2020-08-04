@@ -1,3 +1,17 @@
+# Seventh version: update 3
+
+### Refactored
+
+- `main.go` has been moved to a package: `server-simple-imageboard`.
+
+### Updated
+
+- `Dockerfile`.
+- `README.md`.
+- `.gitignore`.
+- `go.mod` and `go.sum`.
+- `vendor` directory.
+
 # Seventh version: update 2
 
 ### Updated
