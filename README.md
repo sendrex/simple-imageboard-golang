@@ -160,19 +160,19 @@ Dependencies are bundled with the project (`vendor` directory), but if you wish 
 - Local
 
 ```console
-go build -mod=vendor
+go build -mod=vendor ./cmd/server-simple-imageboard
 ```
 
 - Online
 
 ```console
-go build
+go build ./cmd/server-simple-imageboard
 ```
 
 Finally, you can run the server.
 
 ```console
-./simple-imageboard-golang
+./server-simple-imageboard
 ```
 
 # Mixed deployment
