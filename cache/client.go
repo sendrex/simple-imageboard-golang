@@ -1,4 +1,4 @@
-package redis
+package cache
 
 import (
 	"fmt"
@@ -24,9 +24,9 @@ func init() {
 		Password:   env.GetString("REDIS_PASSWORD"),
 		DB:         env.GetInt("REDIS_DATABASE"),
 	}); err != nil {
-		message := fmt.Errorf("[REDIS] connection failed @ %w", err)
+		message := fmt.Errorf("[CACHE] Redis connection failed @ %w", err)
 		panic(message)
 	}
 
-	fmt.Println("[REDIS] connection OK")
+	fmt.Println("[CACHE] Redis connection OK")
 }
