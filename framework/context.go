@@ -51,3 +51,15 @@ func BindDeleteData(ctx Context) (*model.DeleteData, error) {
 
 	return deleteData, deleteData.Validate()
 }
+
+// BindUpdateData returns a update data struct extracted from the body and an error to be checked in the handler.
+func BindUpdateData(ctx Context) (*model.UpdateData, error) {
+	updateData := new(model.UpdateData)
+
+	if err := ctx.Bind(&updateData); err != nil {
+		// If data couldn't be binded, return that error
+		return nil, err
+	}
+
+	return updateData, updateData.Validate()
+}

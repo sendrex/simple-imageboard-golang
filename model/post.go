@@ -19,12 +19,14 @@ var (
 type Post struct {
 	ID           uint64     `json:"id" gorm:"primary_key;AUTO_INCREMENT"`
 	Content      string     `json:"content" gorm:"not null;size:1000"`
-	DeleteCode   string     `json:"delete_code,omitempty" gorm:"not null;size:128"`
+	Password     string     `json:"password,omitempty" gorm:"not null;size:128"`
 	Pic          *string    `json:"pic,omitempty" gorm:"size:512"`
 	ParentThread *uint64    `json:"parent_thread,omitempty"`
 	ReplyTo      *uint64    `json:"reply_to,omitempty"`
 	CreatedAt    *time.Time `json:"created_at" gorm:"not null;default:CURRENT_TIMESTAMP"`
 	UpdatedAt    *time.Time `json:"updated_at,omitempty" gorm:"not null;default:CURRENT_TIMESTAMP"`
+	Sticky       bool       `json:"sticky,omitempty"`
+	Closed       bool       `json:"closed,omitempty"`
 	Sage         bool       `json:"sage,omitempty" gorm:"-"` // This field is not stored
 }
 
@@ -36,8 +38,8 @@ func (post *Post) TableName() string {
 // BeforeCreate makes the delete code if it's empty.
 func (post *Post) BeforeCreate(scope *gorm.Scope) error {
 	// Make delete code if it hasn't one
-	if post.DeleteCode == "" {
-		post.DeleteCode = randomString(32)
+	if post.Password == "" {
+		post.Password = randomString(32)
 	}
 
 	return nil
@@ -54,9 +56,9 @@ func (post *Post) Validate() error {
 	} else if len(post.Content) > 1000 {
 		// Check if content hasn't more than 1000 characters
 		return errors.New("content must not have more than 1000 characters")
-	} else if len(post.DeleteCode) > 128 {
-		// Check if delete_code hasn't more than 128 characters
-		return errors.New("delete_code must not have more than 128 characters")
+	} else if len(post.Password) > 128 {
+		// Check if password hasn't more than 128 characters
+		return errors.New("password must not have more than 128 characters")
 	} else if post.Pic != nil {
 		// Check if pic is not empty and...
 		if len(*post.Pic) > 512 {
@@ -66,6 +68,12 @@ func (post *Post) Validate() error {
 			// ... it's a valid URL
 			return errors.New("pic must be a valid URL")
 		}
+	} else if post.Sticky {
+		// Check if sticky is set to false
+		return errors.New("sticky must not be set to true")
+	} else if post.Closed {
+		// Check if closed is set to false
+		return errors.New("closed must not be set to true")
 	}
 
 	return nil
@@ -79,6 +87,11 @@ func (post *Post) RepliesToAnotherPost() bool {
 // IsAParentThread checks if this post starts a parent thread.
 func (post *Post) IsAParentThread() bool {
 	return post.ParentThread == nil
+}
+
+// AllowsReplies checks if this post allows being replied.
+func (post *Post) AllowsReplies() bool {
+	return !post.Closed
 }
 
 // Sages checks if parent thread must not be bumped.

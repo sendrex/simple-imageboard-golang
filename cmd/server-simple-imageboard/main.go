@@ -46,6 +46,7 @@ func main() {
 	posts.GET("/:id", handler.GetPost)
 	posts.POST("", handler.SavePost, middleware.IPRateLimitStrict(), middleware.CheckHeader())
 	posts.DELETE("", handler.DeletePost, middleware.IPRateLimitStrict(), middleware.CheckHeader())
+	posts.PUT("", handler.UpdatePost, middleware.IPRateLimitStrict(), middleware.CheckHeader())
 
 	// Start server
 	addr := fmt.Sprintf(":%d", env.GetInt("PORT"))

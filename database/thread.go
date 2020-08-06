@@ -16,7 +16,7 @@ var (
 func GetThread(id uint64) ([]model.Post, error) {
 	// Query every post that belong to a thread given its ID
 	thread := make([]model.Post, 0)
-	err := db.Select("id, content, pic, reply_to, created_at").Where("id = ?", id).Or("parent_thread = ?", id).Or("reply_to = ?", id).Order("id asc").Find(&thread).Error
+	err := db.Select("id, content, pic, reply_to, created_at, sticky, closed").Where("id = ?", id).Or("parent_thread = ?", id).Or("reply_to = ?", id).Order("id ASC").Find(&thread).Error
 
 	if err != nil {
 		// If there's any error, return it
@@ -34,7 +34,7 @@ func GetThread(id uint64) ([]model.Post, error) {
 func DeleteOldThreads() error {
 	// Query IDs from old threads
 	threadIDs := make([]uint64, 0)
-	err := db.Model(&model.Post{}).Offset(maxParentThreads).Where("parent_thread IS NULL").Order("updated_at desc").Pluck("id", &threadIDs).Error
+	err := db.Model(&model.Post{}).Offset(maxParentThreads).Where("parent_thread IS NULL").Order("updated_at DESC").Pluck("id", &threadIDs).Error
 
 	if err != nil {
 		// If there's any error, return it
@@ -52,7 +52,7 @@ func DeleteOldThreads() error {
 func BumpThread(post *model.Post) error {
 	// Query count of posts that belong to a thread given the parent post ID from a post
 	var threadLength uint64
-	err := db.Model(&model.Post{}).Where("id = ?", *post.ParentThread).Or("parent_thread = ?", *post.ParentThread).Order("id asc").Count(&threadLength).Error
+	err := db.Model(&model.Post{}).Where("id = ?", *post.ParentThread).Or("parent_thread = ?", *post.ParentThread).Order("id ASC").Count(&threadLength).Error
 
 	if err != nil {
 		// If there's any error, return it
