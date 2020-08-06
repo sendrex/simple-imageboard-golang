@@ -71,7 +71,7 @@
 		- <b>content</b>: <span>[required, type: string, min: 1, max: 1000]</span> &lt;post content&gt;<br />
 		- <b>reply_to</b>: <span>[optional, type: uint64]</span> &lt;post id you reply to&gt; OR null to make a new thread<br />
 		- <b>pic</b>: <span>[optional, type: string, max: 512]</span> &lt;direct external image url&gt; OR null<br />
-		- <b>delete_code</b>: <span>[optional, type: string, max: 128]</span> &lt;password to delete the post any time&gt; OR null to make a random one of 32 characters long<br />
+		- <b>password</b>: <span>[optional, type: string, max: 128]</span> &lt;password to delete the post at any time&gt; OR null to make a random one of 32 characters long<br />
 		- <b>sage</b>: <span>[optional, type: boolean]</span> &lt;don't bump parent thread when it's set to true&gt; OR false OR null<br />
 	</code>
 
@@ -83,10 +83,26 @@
 		<br />
 		Body:<br />
 		- <b>id</b>: <span>[required, type: uint64]</span> &lt;post id&gt;<br />
-		- <b>delete_code</b>: <span>[required, type: string]</span> &lt;code received after successful posting&gt;<br />
+		- <b>password</b>: <span>[required, type: string]</span> &lt;password received after making a post&gt; OR &lt;admin password&gt;<br />
 		<br />
 		WARNING:<br />
 		- <b><span>if your post started a parent thread, every reply will also be deleted</span></b>
+	</code>
+
+	<p>PUT</p>
+	<code>/post</code>
+	<code>
+		Header:<br />
+		- <b>Content-Type</b>: application/json; charset=UTF-8<br />
+		<br />
+		Body:<br />
+		- <b>id</b>: <span>[required, type: uint64]</span> &lt;post id&gt;<br />
+		- <b>password</b>: <span>[required, type: string]</span> &lt;admin password&gt;<br />
+		- <b>sticky</b>: <span>[required, type: boolean]</span> &lt;put this thread at the top when it's set to true&gt; OR &lt;make this thread into a regular one when it's set to false OR null&gt;<br />
+		- <b>closed</b>: <span>[required, type: boolean]</span> &lt;forbid replies when it's set to true&gt; OR &lt;allow replies when it's set to false OR null&gt;<br />
+		<br />
+		WARNING:<br />
+		- <b><span>this is not supposed to be used by regular users</span></b>
 	</code>
 </body>
 
