@@ -13,5 +13,5 @@ func init() {
 		panic(message)
 	}
 
-	fmt.Println("[ENV] file read .env OK")
+	fmt.Println("[ENV] file .env read OK")
 }
