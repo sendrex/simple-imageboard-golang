@@ -1,30 +1,3 @@
-- [Simple Imageboard](#simple-imageboard)
-- [Flow diagram](#flow-diagram)
-- [Prerequisites](#prerequisites)
-    - [For container deployment](#for-container-deployment)
-    - [For local deployment](#for-local-deployment)
-- [Installation](#installation)
-    - [Clone this repository](#clone-this-repository)
-    - [Copy `.env.example` to `.env`](#copy-envexample-to-env)
-    - [Edit `.env` with your credentials](#edit-env-with-your-credentials)
-- [Container deployment](#container-deployment)
-    - [First run: build containers and start containers in background](#first-run-build-containers-and-start-containers-in-background)
-    - [Start containers in foreground](#start-containers-in-foreground)
-    - [Start containers in background](#start-containers-in-background)
-    - [Stop containers in background](#stop-containers-in-background)
-    - [Update containers without losing data](#update-containers-without-losing-data)
-    - [Remove containers without losing data](#remove-containers-without-losing-data)
-    - [Delete all saved data and remove containers](#delete-all-saved-data-and-remove-containers)
-- [Local deployment](#local-deployment)
-    - [Redis: set and share password](#redis-set-and-share-password)
-    - [Database: create database and user](#database-create-database-and-user)
-    - [Server: build and run](#server-build-and-run)
-- [Mixed deployment](#mixed-deployment)
-    - [Only Redis as container](#only-redis-as-container)
-    - [Only Postgres as container](#only-postgres-as-container)
-    - [Redis and Postgres as containers](#redis-and-postgres-as-containers)
-- [Tips](#tips)
-
 # Simple Imageboard
 
 [![GoDev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go)](https://pkg.go.dev/github.com/AquoDev/simple-imageboard-golang?tab=overview)
@@ -35,111 +8,95 @@
 ![Diagram](https://i.imgur.com/MsP4QU4.png)
 **Everything is a post.**
 
-# Flow diagram
+## Flow diagram 🔄
 
-![Diagram](https://i.imgur.com/lum9YPa.png)
+![Diagram](https://i.imgur.com/90MK3y8.png)
 
-# Prerequisites
+## Prerequisites 📋
 
-### For container deployment
+- Git
+- Docker (19.03+)
+- Docker Compose (1.25+)
 
-- Docker (v19.03+)
-- Docker Compose (v1.25+)
+**For local or mixed deployment**, you also need the following:
 
-### For local deployment
+- PostgreSQL (12+)
+- Redis (6.0+)
+- Golang (1.14.4+)
 
-- PostgreSQL (v12+)
-- Redis (v6.0+)
-- Golang (v1.14.4+)
+## Installation 🔧
 
-# Installation
-
-### Clone this repository
+Open a terminal and follow these steps:
 
 ```console
-git clone https://github.com/AquoDev/simple-imageboard-golang.git
+# Clone repository
+user@system:~$ git clone https://github.com/AquoDev/simple-imageboard-golang.git
+
+# Change directory
+user@system:~$ cd simple-imageboard-golang
+
+# Copy .env.example and rename it to .env
+user@system:simple-imageboard-golang$ cp .env.example .env
+
+# Edit .env and change every value you need, in your editor of choice
+user@system:simple-imageboard-golang$ editor .env
 ```
 
-### Copy `.env.example` to `.env`
+## Deployment 🚀
+
+`It is assumed that you're in the same directory where the repository was cloned to.`
+
+### Docker
 
 ```console
-cp .env.example .env
-```
-
-### Edit `.env` with your credentials
-
-```console
-nano .env
-```
-
-# Container deployment
-
-### First run: build containers and start containers in background
-
-```console
-docker-compose up --build -d
-```
-
-### Start containers in foreground
-
-```console
-docker-compose up
-```
-
-### Start containers in background
-
-```console
+# Start containers
 docker-compose up -d
 ```
 
-### Stop containers in background
-
 ```console
+# Stop containers
 docker-compose stop
 ```
 
-### Update containers without losing data
-
 ```console
+# Update server container without losing data
 docker-compose build --no-cache
 ```
 
-### Remove containers without losing data
-
 ```console
+# Remove containers without losing data
 docker-compose down
 ```
 
-### Delete all saved data and remove containers
-
 ```console
+# Delete all saved data and remove containers
 docker-compose down -v
 ```
 
-# Local deployment
+### Local
 
-### Redis: set and share password
+#### Redis: set password
 
 The credentials must be shared between `.env` and `/etc/redis/redis.conf`.
 
 ```console
-nano .env
+editor .env
 ...
 REDIS_PASSWORD=your_pass_here
 ... (Save)
-```
 
-```console
-sudo nano /etc/redis/redis.conf
+sudo editor /etc/redis/redis.conf
 ...
 # Uncomment requirepass
 requirepass your_pass_here
 ... (Save)
 ```
 
-### Database: create database and user
+#### Postgres: create user and database
 
 The credentials must be shared between `.env` and these commands.
+
+Tables are automatically created after starting the server for the first time.
 
 ```console
 sudo -u postgres psql
@@ -149,53 +106,42 @@ sudo -u postgres psql
 > \q
 ```
 
-`Tables are automatically created after starting the server for the first time.`
-
-### Server: build and run
+#### Server: build and run
 
 You can edit the listening port in `.env` and put a reverse proxy in front of this server.
 
 Dependencies are bundled with the project (`vendor` directory), but if you wish to download them, use the online method.
 
-- Local
-
 ```console
+# Method 1: Using the bundled dependencies
 go build -mod=vendor ./cmd/server-simple-imageboard
-```
 
-- Online
-
-```console
+# Method 2: Download them (it can take a while)
 go build ./cmd/server-simple-imageboard
 ```
 
-Finally, you can run the server.
-
 ```console
+# Start server
 ./server-simple-imageboard
 ```
 
-# Mixed deployment
-
-### Only Redis as container
+### Mixed
 
 ```console
+# Start Redis container
 docker-compose -f docker-compose.yml -f docker-compose.mixed-deployment.yml up -d redis
 ```
 
-### Only Postgres as container
-
 ```console
+# Start Postgres container
 docker-compose -f docker-compose.yml -f docker-compose.mixed-deployment.yml up -d database
 ```
 
-### Redis and Postgres as containers
-
 ```console
+# Start Redis and Postgres containers
 docker-compose -f docker-compose.yml -f docker-compose.mixed-deployment.yml up -d redis database
 ```
 
-# Tips
+## License 📋
 
-- First of all, **read `.env` and change the settings as you need**.
-- Remember to prune every unused image from Docker, as they can take lots of space.
+[GNU General Public License v3.0](https://github.com/AquoDev/simple-imageboard-golang/blob/master/LICENSE)
