@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
+	"github.com/AquoDev/simple-imageboard-golang/cache"
 	"github.com/AquoDev/simple-imageboard-golang/database"
 	"github.com/AquoDev/simple-imageboard-golang/framework"
-	"github.com/AquoDev/simple-imageboard-golang/redis"
 )
 
 var (
@@ -14,7 +14,7 @@ var (
 		"example": "{url}/post/{id}",
 	}
 
-	deletedMessage = map[string]string{
+	okMessage = map[string]string{
 		"message": http.StatusText(http.StatusOK),
 	}
 )
@@ -37,7 +37,7 @@ func GetPost(ctx framework.Context) error {
 	// Try to get the post from cache. Is it stored in cache?
 	// ── Yes:	check if what's cached is an error or a post. Both options lead to a response.
 	// ── No:	continue. It's not in cache, but it could be stored in the database.
-	if response, err := redis.GetCachedPost(id); err == nil {
+	if response, err := cache.GetCachedPost(id); err == nil {
 		// Is the post cached?
 		// ── Yes:	return the cached post.
 		// ── No:	it's an error, so return that error as a failed JSON response.
@@ -51,12 +51,12 @@ func GetPost(ctx framework.Context) error {
 	// ── Yes:	return the post.
 	// ── No:	continue. The post doesn't exist.
 	if response, err := database.GetPost(id); err == nil {
-		go redis.SetCachedPost(id, http.StatusOK, response)
+		go cache.SetCachedPost(id, http.StatusOK, response)
 		return framework.SendOK(ctx, response)
 	}
 
 	// Return a 404 NotFound JSON response after caching it.
-	go redis.SetCachedPost(id, http.StatusNotFound, nil)
+	go cache.SetCachedPost(id, http.StatusNotFound, nil)
 	return framework.SendError(http.StatusNotFound)
 }
 
@@ -74,10 +74,10 @@ func SavePost(ctx framework.Context) error {
 	// ── Yes:	check if the reply exists. We can't reply to a post that doesn't exists (foreign key constrain).
 	// ── No:	continue. The post we receive starts a parent thread.
 	if post.RepliesToAnotherPost() {
-		// Does the reply exists?
+		// Does the reply exists and is allowed to be replied?
 		// ── Yes:	make the relation between post and reply.
-		// ── No:	return a failed JSON response. The reply doesn't exist.
-		if reply, err := database.GetPost(*post.ReplyTo); err == nil {
+		// ── No:	return a failed JSON response. The reply doesn't exist or thread is closed.
+		if reply, err := database.GetPost(*post.ReplyTo); err == nil && reply.AllowsReplies() {
 			post.MakeRelationWith(reply)
 		} else {
 			return framework.SendError(http.StatusForbidden)
@@ -124,5 +124,26 @@ func DeletePost(ctx framework.Context) error {
 	}
 
 	// Return a 200 OK JSON response.
-	return framework.SendOK(ctx, deletedMessage)
+	return framework.SendOK(ctx, okMessage)
+}
+
+// UpdatePost handles a JSON response with a post.
+func UpdatePost(ctx framework.Context) error {
+	// Read body (JSON) from the request. Is the body request bad formed?
+	// ── Yes:	return a failed JSON response. Maybe some field's missing.
+	// ── No:	continue. Body is well formed and could be read.
+	data, err := framework.BindUpdateData(ctx)
+	if err != nil {
+		return framework.SendError(http.StatusBadRequest)
+	}
+
+	// Try to update post (it must be a parent thread). Couldn't it be updated?
+	// ── Yes:	return a failed JSON response. Incorrect password, post doesn't exist or post isn't a parent thread.
+	// ── No:	continue. Correct password, the post was updated.
+	if err := database.UpdatePost(data); err != nil {
+		return framework.SendError(http.StatusUnauthorized)
+	}
+
+	// Return a 200 OK JSON response.
+	return framework.SendOK(ctx, okMessage)
 }
