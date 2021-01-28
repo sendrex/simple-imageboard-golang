@@ -73,6 +73,11 @@ docker-compose down
 docker-compose down -v
 ```
 
+```console
+# Remove the build image (it's not needed after a clean build)
+docker image prune --filter label=stage=intermediate
+```
+
 ### Local
 
 #### Redis: set password
