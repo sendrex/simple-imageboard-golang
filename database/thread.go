@@ -52,7 +52,7 @@ func DeleteOldThreads() error {
 func BumpThread(post *model.Post) error {
 	// Query count of posts that belong to a thread given the parent post ID from a post
 	var threadLength uint64
-	err := db.Model(&model.Post{}).Where("id = ?", *post.ParentThread).Or("parent_thread = ?", *post.ParentThread).Order("id ASC").Count(&threadLength).Error
+	err := db.Model(&model.Post{}).Where("id = ?", *post.ParentThread).Or("parent_thread = ?", *post.ParentThread).Count(&threadLength).Error
 
 	if err != nil {
 		// If there's any error, return it
