@@ -96,11 +96,14 @@ func SavePost(ctx framework.Context) error {
 	// ── Yes: threads that are beyond the last page must be deleted.
 	// ── No (post is a reply), but the post doesn't sage: bump that parent thread.
 	// ── No (post is a reply), but the post sages: continue. Parent thread is not bumped and no threads should be deleted.
-	if post.IsAParentThread() {
-		go database.DeleteOldThreads()
-	} else if !post.Sages() {
-		go database.BumpThread(post)
-	}
+	go func() {
+		// The following statements are meant to be ran in background, as they don't affect the response
+		if post.IsAParentThread() {
+			database.DeleteOldThreads()
+		} else if !post.Sages() {
+			database.BumpThread(post)
+		}
+	}()
 
 	// Return a 201 Created JSON response with the post ID and its delete code.
 	return framework.SendCreated(ctx, response)
