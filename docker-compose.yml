@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   redis:
-    image: redis:6.0.6-alpine3.12
+    image: redis:6.0.10-alpine
     restart: always
     privileged: false
     sysctls:
@@ -21,7 +21,7 @@ services:
       - redis-data:/data
 
   database:
-    image: postgres:12.3-alpine
+    image: postgres:13-alpine
     restart: always
     privileged: false
     container_name: database-simple-imageboard
