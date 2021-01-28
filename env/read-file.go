@@ -9,9 +9,7 @@ import (
 func init() {
 	// Read .env and panic if it couldn't be read
 	if err := godotenv.Load(); err != nil {
-		message := fmt.Errorf("[ENV] file .env couldn't be read @ %w", err)
+		message := fmt.Errorf(".env file couldn't be read\n%w", err)
 		panic(message)
 	}
-
-	fmt.Println("[ENV] file .env read OK")
 }

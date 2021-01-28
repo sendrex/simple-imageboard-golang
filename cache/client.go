@@ -24,9 +24,7 @@ func init() {
 		Password:   env.GetString("REDIS_PASSWORD"),
 		DB:         env.GetInt("REDIS_DATABASE"),
 	}); err != nil {
-		message := fmt.Errorf("[CACHE] Redis connection failed @ %w", err)
+		message := fmt.Errorf("Redis connection failed\n%w", err)
 		panic(message)
 	}
-
-	fmt.Println("[CACHE] Redis connection OK")
 }

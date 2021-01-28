@@ -29,9 +29,7 @@ func init() {
 		env.GetString("DB_USER"),
 		env.GetString("DB_PASSWORD"),
 	)); err != nil {
-		message := fmt.Errorf("[DATABASE] Postgres connection failed @ %w", err)
+		message := fmt.Errorf("Postgres connection failed\n%w", err)
 		panic(message)
 	}
-
-	fmt.Println("[DATABASE] Postgres connection OK")
 }
